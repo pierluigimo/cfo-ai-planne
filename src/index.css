@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body { @apply bg-slate-50 text-slate-900; font-family: system-ui, sans-serif; }
+@media print { body { background: white !important; } .print-safe { break-after: page; } .print-avoid-break { break-inside: avoid; } }
