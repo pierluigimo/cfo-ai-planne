@@ -134,7 +134,7 @@ const i18n = {
     },
     prompts: {
         fin: (d, b, ds, eb, cf, roi, ros, sc) => `Sei un analista finanziario senior. Analizza: ${d.nomeAzienda} (${d._sl}). BEP: ${b.bepUnita}u. EBITDA: €${Math.round(eb)}. DSCR: ${ds.dscr}. Scenario: ${sc}. Commenta in italiano professionale.`,
-        mkt: (d) => `Analizza il mercato per ${d.nomeAzienda}, settore ${d._sl}. Descrizione: ${d.descrizione}. In italiano: TAM/SAM/SOM, Tabella Competitor, SWOT.`,
+        mkt: (d) => `Analizza il mercato per ${d.nomeAzienda}, settore ${d._sl}. Descrizione: ${d.descrizione}. TAM/SAM/SOM e Competitor.`,
         exec: (d, b, ds, eb, rY, cf, roi, ros, m) => `Chief Strategy Officer. Executive Summary per ${d.nomeAzienda}. Idea: ${d.descrizione}. BEP ${b.bepUnita}u, DSCR ${ds.dscr}, EBITDA €${Math.round(eb)}. Focus su SWOT e Richiesta Capitale. Italiano.`
     },
     pdf: { 
@@ -164,8 +164,14 @@ const i18n = {
       rows: ["Ricavi", "Costi Var.", "Margine Contr.", "Costi Fissi", "EBITDA"],
       ebitdaMargin: "Margine EBITDA",
     },
-    sectors: { saas: "SaaS", ecom: "E-Commerce", risto: "Ristorazione", cons: "Consulenza", manif: "Manifattura", health: "Healthcare" },
-    hints: { saas: "Cloud architecture", ecom: "Logistica store", risto: "Food operations", cons: "Human capital", manif: "Asset industriali", health: "Certificazioni" }
+    sectors: { 
+      saas: "SaaS", ecom: "E-Commerce", risto: "Ristorazione", cons: "Consulenza", manif: "Manifattura", health: "Healthcare",
+      realestate: "Real Estate", finance: "Finance & Banking", retail: "Retail", tech: "Tech & IT", energy: "Energia", edu: "Education", agro: "Agri-Tech", transp: "Logistica & Trasporti", media: "Media & Entertainment" 
+    },
+    hints: { 
+      saas: "Cloud architecture", ecom: "Logistica store", risto: "Food operations", cons: "Human capital", manif: "Asset industriali", health: "Certificazioni",
+      realestate: "Property Management", finance: "Capital Markets", retail: "B2C Sales", tech: "Hardware/Software", energy: "Rinnovabili", edu: "EdTech & Training", agro: "Smart Farming", transp: "Supply Chain", media: "Content Creation"
+    }
   },
   
   en: {
@@ -264,8 +270,14 @@ const i18n = {
       rows: ["Revenue", "Var. Costs", "Contribution Margin", "Fixed Costs", "EBITDA"],
       ebitdaMargin: "EBITDA Margin",
     },
-    sectors: { saas: "SaaS", ecom: "E-Commerce", risto: "Restaurant", cons: "Consulting", manif: "Manufacturing", health: "Healthcare" },
-    hints: { saas: "Software", ecom: "Store", risto: "Food", cons: "Consulting", manif: "Manufacturing", health: "Healthcare" }
+    sectors: { 
+      saas: "SaaS", ecom: "E-Commerce", risto: "Restaurant", cons: "Consulting", manif: "Manufacturing", health: "Healthcare",
+      realestate: "Real Estate", finance: "Finance & Banking", retail: "Retail", tech: "Tech & IT", energy: "Energy", edu: "Education", agro: "Agri-Tech", transp: "Logistics & Transport", media: "Media & Entertainment"
+    },
+    hints: { 
+      saas: "Software", ecom: "Store", risto: "Food", cons: "Consulting", manif: "Manufacturing", health: "Healthcare",
+      realestate: "Property Management", finance: "Capital Markets", retail: "B2C Sales", tech: "Hardware/Software", energy: "Renewables", edu: "EdTech & Training", agro: "Smart Farming", transp: "Supply Chain", media: "Content Creation"
+    }
   }
 };
 
@@ -315,6 +327,15 @@ function useSectors() {
       cons: { label: s.cons, cf: 60000,  p: 150, cv: 20, cr: 0.2,  hint: h.cons },
       manif:{ label: s.manif,cf: 250000, p: 80,  cv: 35, cr: 0.12, hint: h.manif },
       health:{label: s.health,cf: 300000,p: 200, cv: 60, cr: 0.3,  hint: h.health },
+      realestate: { label: s.realestate, cf: 500000, p: 5000, cv: 1500, cr: 0.1, hint: h.realestate },
+      finance: { label: s.finance, cf: 200000, p: 500, cv: 50, cr: 0.25, hint: h.finance },
+      retail: { label: s.retail, cf: 100000, p: 60, cv: 30, cr: 0.15, hint: h.retail },
+      tech: { label: s.tech, cf: 150000, p: 120, cv: 25, cr: 0.35, hint: h.tech },
+      energy: { label: s.energy, cf: 800000, p: 2000, cv: 800, cr: 0.12, hint: h.energy },
+      edu: { label: s.edu, cf: 50000, p: 90, cv: 15, cr: 0.2, hint: h.edu },
+      agro: { label: s.agro, cf: 120000, p: 40, cv: 15, cr: 0.18, hint: h.agro },
+      transp: { label: s.transp, cf: 250000, p: 250, cv: 120, cr: 0.15, hint: h.transp },
+      media: { label: s.media, cf: 90000, p: 30, cv: 5, cr: 0.28, hint: h.media }
     };
   }, [t]);
 }
@@ -375,21 +396,13 @@ const FinancialEngine = {
 
 const Fallbacks = {
   fin: (t, d, bep, ds, eb, cf, roi, ros, sc, lang = "it") =>
-    `**${d.nomeAzienda} — Financial snapshot (${sc})**
-- **BEP:** ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}
-- **EBITDA (Y1):** €${formatCurrencyByLang(eb, lang)}
-- **DSCR:** ${ds.dscr}
-- **Burn:** ${FinancialEngine.formatMoney(cf.br, lang)} /mo
-- **ROI (Y1):** ${roi}%`,
-  mkt: (t, d) => `Analisi di mercato per ${d.nomeAzienda} nel settore ${d._sl}.`,
+    `**${d.nomeAzienda} — Financial snapshot (${sc})**\n- **BEP:** ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}\n- **EBITDA (Y1):** €${formatCurrencyByLang(eb, lang)}\n- **DSCR:** ${ds.dscr}\n- **Burn:** ${FinancialEngine.formatMoney(cf.br, lang)} /mo\n- **ROI (Y1):** ${roi}%`,
+  mkt: (t, d, lang = "it") => lang === "it" ? 
+    `### Analisi di Mercato: ${d.nomeAzienda}\n\n**1) Dimensionamento Mercato (TAM/SAM/SOM)**\n- Mercato in espansione con ottime prospettive di penetrazione nel segmento ${d.target}.\n\n**2) Competitor Analisi**\n- **Competitor A (Leader consolidato):** Punti di forza: Brand forte, suite completa. Debolezza: Costi elevati, complessità d'uso.\n- **Competitor B (Specialista di nicchia):** Punti di forza: Modelli avanzati per rischi specifici. Debolezza: Integrazioni limitate, mercato ristretto.\n- **Competitor C (Nuovo entrante):** Punti di forza: Interfaccia moderna, prezzi aggressivi. Debolezza: Base clienti piccola, feature set ridotto.\n\n**3) Analisi SWOT**\n- **Forza:** Innovazione tecnologica. **Debolezza:** Scala iniziale. **Opportunità:** Nuovi trend. **Minacce:** Concorrenza.` 
+    : 
+    `### Market Analysis: ${d.nomeAzienda}\n\n**1) Market Sizing (TAM/SAM/SOM)**\n- Expanding market with excellent penetration prospects in the ${d.target} segment.\n\n**2) Competitor Analysis**\n- **Competitor A (Consolidated Leader):** Strengths: Strong brand, complete suite. Weaknesses: High costs, complexity.\n- **Competitor B (Niche Specialist):** Strengths: Advanced models. Weaknesses: Limited integrations, restricted market.\n- **Competitor C (New Entrant):** Strengths: Modern UI, aggressive pricing. Weaknesses: Small customer base, reduced feature set.\n\n**3) SWOT Analysis**\n- **Strengths:** Tech innovation. **Weaknesses:** Initial scale. **Opportunities:** New trends. **Threats:** Competition.`,
   exec: (t, d, bep, ds, eb, cf, roi, ros, lang = "it") =>
-    `## ${t.execCard.title}
-**${d.nomeAzienda}** — ${d.descrizione}
-- BEP: ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}
-- EBITDA Y1: €${formatCurrencyByLang(eb, lang)}
-- DSCR: ${ds.dscr}
-- ROI Y1: ${roi}%
-*(Fallback mode — worker non disponibile)*`
+    `## ${t.execCard.title}\n**${d.nomeAzienda}** — ${d.descrizione}\n- BEP: ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}\n- EBITDA Y1: €${formatCurrencyByLang(eb, lang)}\n- DSCR: ${ds.dscr}\n- ROI Y1: ${roi}%\n*(Fallback mode — worker non disponibile)*`
 };
 
 // --- BASE UI COMPONENTS ---
@@ -520,6 +533,7 @@ const MarkdownRenderer = ({ content }) => {
   if (!content) return null;
   const stringContent = typeof content === "string" ? content : JSON.stringify(content);
   const html = stringContent
+    .replace(/[\*\-•]\s*\n\s*/g, '- ') // Corregge gli a capo anomali imposti dall'AI dopo il pallino
     .replace(/\*\*(.*?)\*\*/g, `<strong style="color:${COLORS.primary};font-weight:700">$1</strong>`)
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
     .replace(
@@ -546,7 +560,7 @@ const MarkdownRenderer = ({ content }) => {
         `<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#0A0A0A;border:1px solid ${COLORS.cardBorder};border-radius:6px;overflow:hidden">${m}</table>`
     )
     .replace(
-      /^[\*\-] (.*$)/gm,
+      /^[\*\-•]\s*(.*$)/gm, // Supporta ora vari stili di punto elenco (*, -, •)
       `<div style="padding:4px 0 4px 20px;position:relative"><span style="position:absolute;left:4px;color:${COLORS.accent};font-weight:bold">•</span>$1</div>`
     )
     .replace(/\n\n/g, '<div style="height:12px"></div>')
@@ -760,7 +774,7 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
         <Page pageNumber={1}>
           <div className="h-full flex flex-col justify-center items-center text-center">
             <div className="w-40 h-40 bg-[#D4AF37] rounded-[2.5rem] flex items-center justify-center text-[#0A0A0A] text-7xl font-black mb-12 shadow-[0_0_50px_rgba(212,175,55,0.3)]">
-              BS
+              {data.nomeAzienda ? data.nomeAzienda.charAt(0).toUpperCase() : ""}
             </div>
             <h1 className="text-6xl font-serif font-black text-[#D4AF37] mb-4 uppercase tracking-tighter">{data.nomeAzienda}</h1>
             <p className="text-2xl text-[#A3A3A3] mb-20 font-light tracking-wide">The Black Swan CFO Playbook</p>
@@ -1384,7 +1398,7 @@ export default function App() {
         <header className="bg-[#171717] border-b border-[#262626] h-16 flex items-center px-8 justify-between shadow-md sticky top-0 z-40 print:hidden">
           <div className="flex items-center gap-3 font-bold text-lg text-[#D4AF37]">
             <div className="w-8 h-8 bg-[#D4AF37] rounded-lg text-[#0A0A0A] flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.3)]">
-              BS
+              {data.nomeAzienda ? data.nomeAzienda.charAt(0).toUpperCase() : ""}
             </div>
             <span>CFO Black Swan Planner</span>
           </div>
@@ -1459,7 +1473,7 @@ export default function App() {
             {step === 0 && <StepCompany data={data} updateData={updateData} />}
             {step === 1 && <StepTeam data={data} updateData={updateData} />}
             {step === 2 && <StepEconomics data={data} updateData={updateData} />}
-            {step === 3 && <Dashboard data={data} />}
+            {step === 3 && <Dashboard data={data} updateData={updateData} />}
 
             {step < 3 && (
               <div className="flex justify-between mt-12 pt-8 border-t border-[#262626] max-w-4xl mx-auto print:hidden">
