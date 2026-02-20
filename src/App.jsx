@@ -182,12 +182,23 @@ const i18n = {
       ch5: "5. Piano Economico-Finanziario (PEF)",
       mix: "Marketing Mix (4P)",
       gantt: "Roadmap di Esecuzione (Gantt)",
+      preview: "Anteprima Report Finale",
+      print: "Stampa / Salva PDF",
+      close: "Esci",
+      pnlTitle: "Conto Economico Previsionale (5 Anni)",
+      breakEvenTitle: "Analisi Break Even",
+      breakEvenText: "Pareggio a {units} unità (Mese {month}).",
+      creditTitle: "Bancabilità & Liquidità",
+      maxNeed: "Fabbisogno Massimo",
+      cashFlowTitle: "Cash Flow (24 mesi)",
+      financeAiTitle: "Considerazioni AI Financial",
     },
     table: {
       title: "PEF — Proiezioni 5 Anni",
       item: "Voce",
       year: "Anno",
       rows: ["Ricavi", "Costi Var.", "Margine Contr.", "Costi Fissi", "EBITDA"],
+      ebitdaMargin: "Margine EBITDA",
     },
     sectors: {
       saas: "SaaS",
@@ -324,12 +335,23 @@ const i18n = {
       ch5: "5. Financial Plan (PEF)",
       mix: "Marketing Mix (4P)",
       gantt: "Execution Roadmap (Gantt)",
+      preview: "Final report preview",
+      print: "Print / Save PDF",
+      close: "Close",
+      pnlTitle: "Projected Income Statement (5 Years)",
+      breakEvenTitle: "Break-Even Analysis",
+      breakEvenText: "Break-even at {units} units (Month {month}).",
+      creditTitle: "Creditworthiness & Liquidity",
+      maxNeed: "Maximum Funding Need",
+      cashFlowTitle: "Cash Flow (24 months)",
+      financeAiTitle: "AI Financial Considerations",
     },
     table: {
       title: "Financial Plan — 5-Year Projections",
       item: "Item",
       year: "Year",
       rows: ["Revenue", "Var. Costs", "Contribution Margin", "Fixed Costs", "EBITDA"],
+      ebitdaMargin: "EBITDA Margin",
     },
     sectors: {
       saas: "SaaS",
@@ -353,6 +375,16 @@ const i18n = {
 // --- CORE HOOKS ---
 
 const useLanguage = () => useContext(LanguageContext);
+
+const getLocale = (lang) => (lang === "en" ? "en-US" : "it-IT");
+
+const formatNumberByLang = (value, lang, options = {}) =>
+  new Intl.NumberFormat(getLocale(lang), options).format(Number.isFinite(value) ? value : 0);
+
+const formatCurrencyByLang = (value, lang) => {
+  if (!Number.isFinite(value)) return "∞";
+  return new Intl.NumberFormat(getLocale(lang), { maximumFractionDigits: 0 }).format(Math.round(value));
+};
 
 function useTranslation() {
   const lang = useLanguage();
@@ -447,7 +479,7 @@ const FinancialEngine = {
     return m;
   },
   calcROI: (u, c) => (c === 0 ? 0 : Math.round((u / c) * 10000) / 100),
-  formatMoney: (v) => {
+  formatMoney: (v, lang = "it") => {
     if (!Number.isFinite(v)) return "∞";
     const a = Math.abs(v);
     return (
@@ -455,8 +487,8 @@ const FinancialEngine = {
       (a >= 1e6
         ? `€${(a / 1e6).toFixed(1)}M`
         : a >= 1000
-        ? `€${Math.round(a / 1000).toLocaleString()}K`
-        : `€${Math.round(a).toLocaleString()}`)
+        ? `€${formatNumberByLang(Math.round(a / 1000), lang)}K`
+        : `€${formatNumberByLang(Math.round(a), lang)}`)
     );
   },
 };
@@ -464,23 +496,23 @@ const FinancialEngine = {
 // --- FALLBACKS ---
 
 const Fallbacks = {
-  fin: (t, d, bep, ds, eb, cf, roi, ros, sc) =>
+  fin: (t, d, bep, ds, eb, cf, roi, ros, sc, lang = "it") =>
     `**${d.nomeAzienda} — Financial snapshot (${sc})**
-- **BEP:** ${Number.isFinite(bep.bepUnita) ? bep.bepUnita.toLocaleString() : "∞"} ${t.fallback.units}
-- **EBITDA (Y1):** €${Math.round(eb).toLocaleString()}
+- **BEP:** ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}
+- **EBITDA (Y1):** €${formatCurrencyByLang(eb, lang)}
 - **DSCR:** ${ds.dscr}
-- **Burn:** ${FinancialEngine.formatMoney(cf.br)} /mo
+- **Burn:** ${FinancialEngine.formatMoney(cf.br, lang)} /mo
 - **ROI (Y1):** ${roi}%`,
   mkt: (t, d) =>
     `## ${t.marketCard.title}
 - ${t.fallback.competitors}
 - ${t.fallback.swot}
 *(Fallback mode — worker non disponibile)*`,
-  exec: (t, d, bep, ds, eb, cf, roi, ros) =>
+  exec: (t, d, bep, ds, eb, cf, roi, ros, lang = "it") =>
     `## ${t.execCard.title}
 **${d.nomeAzienda}** — ${d.descrizione}
-- BEP: ${Number.isFinite(bep.bepUnita) ? bep.bepUnita.toLocaleString() : "∞"} ${t.fallback.units}
-- EBITDA Y1: €${Math.round(eb).toLocaleString()}
+- BEP: ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}
+- EBITDA Y1: €${formatCurrencyByLang(eb, lang)}
 - DSCR: ${ds.dscr}
 - ROI Y1: ${roi}%
 *(Fallback mode — worker non disponibile)*`,
@@ -651,7 +683,7 @@ const MarkdownRenderer = ({ content }) => {
 
 // --- VISUALIZATION COMPONENTS ---
 
-const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
+const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits, lang = "it" }) => {
   const W = 560,
     H = 280;
   const P = { t: 30, r: 30, b: 40, l: 65 };
@@ -664,7 +696,10 @@ const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
 
   const x = (q) => P.l + (q / maxQ) * pW;
   const y = (v) => P.t + pH - (v / maxVal) * pH;
-  const formatK = (v) => (v >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`);
+  const formatK = (v) =>
+    v >= 1e6
+      ? `${formatNumberByLang(v / 1e6, lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`
+      : `${formatNumberByLang(Math.round(v / 1000), lang)}K`;
 
   const bepX = x(safeBepUnits);
   const bepY = y(Number.isFinite(bep.bepFatturato) ? bep.bepFatturato : 0);
@@ -705,7 +740,7 @@ const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
           <g transform={`translate(${bepX - 45}, ${bepY - 35})`}>
             <rect width={90} height={22} rx={4} fill={COLORS.primary} />
             <text x={45} y={15} textAnchor="middle" fill="white" fontWeight="bold">
-              BEP: {bep.bepUnita.toLocaleString()} u.
+              BEP: {formatNumberByLang(bep.bepUnita, lang)} u.
             </text>
           </g>
         </g>
@@ -718,7 +753,7 @@ const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
   );
 };
 
-const CashFlowChart = ({ flows }) => {
+const CashFlowChart = ({ flows, lang = "it" }) => {
   if (!flows || !flows.length) return null;
   const W = 560,
     H = 210;
@@ -728,23 +763,62 @@ const CashFlowChart = ({ flows }) => {
 
   const x = (i) => P.l + (i / denom) * (W - P.l - P.r) - 5;
   const yVal = (v) => H - P.b - ((v + maxAbs) / (2 * maxAbs)) * (H - P.t - P.b);
+  const formatCompactMoney = (v) => FinancialEngine.formatMoney(v, lang).replace("€", "");
+
+  const linePath = flows
+    .slice(0, 24)
+    .map((f, i) => `${i === 0 ? "M" : "L"} ${x(i) + 5} ${yVal(isNaN(f.ca) ? 0 : f.ca)}`)
+    .join(" ");
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-full font-sans text-[10px]">
+      <defs>
+        <linearGradient id="cashBars" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#0F172A" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#2563EB" stopOpacity="0.75" />
+        </linearGradient>
+      </defs>
+
+      {[maxAbs, maxAbs / 2, 0, -maxAbs / 2, -maxAbs].map((tick, idx) => (
+        <g key={idx}>
+          <line x1={P.l} y1={yVal(tick)} x2={W - P.r} y2={yVal(tick)} stroke="#E2E8F0" strokeDasharray="3 3" />
+          <text x={P.l - 8} y={yVal(tick) + 3} textAnchor="end" fill={COLORS.textMuted} fontSize="9">
+            {formatCompactMoney(tick)}
+          </text>
+        </g>
+      ))}
+
       <line x1={P.l} y1={yVal(0)} x2={W - P.r} y2={yVal(0)} stroke="#CBD5E1" strokeDasharray="4 4" />
       {flows.slice(0, 24).map((f, i) => {
         const val = isNaN(f.ca) ? 0 : f.ca;
         const barY = val >= 0 ? yVal(val) : yVal(0);
         const h = Math.abs(yVal(val) - yVal(0));
-        return <rect key={i} x={x(i)} y={barY} width={10} height={Math.max(1, h)} fill={val >= 0 ? COLORS.success : COLORS.danger} rx={1} opacity={0.8} />;
+        const showLabel = i % 3 === 0 || i === 23;
+        return (
+          <g key={i}>
+            <rect x={x(i)} y={barY} width={10} height={Math.max(1, h)} fill={val >= 0 ? "url(#cashBars)" : COLORS.danger} rx={2} opacity={0.9} />
+            {showLabel && (
+              <>
+                <text x={x(i) + 5} y={val >= 0 ? barY - 4 : barY + h + 10} textAnchor="middle" fill={COLORS.textMuted} fontSize="8" fontWeight="700">
+                  {formatCompactMoney(val)}
+                </text>
+                <text x={x(i) + 5} y={H - P.b + 12} textAnchor="middle" fill={COLORS.textLight} fontSize="8">
+                  M{f.mese}
+                </text>
+              </>
+            )}
+          </g>
+        );
       })}
+
+      <path d={linePath} stroke={COLORS.primary} strokeWidth={1.5} fill="none" opacity={0.8} />
     </svg>
   );
 };
 
 // --- MULTI-PAGE PDF REPORT ---
 
-const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketContent, execContent, onClose }) => {
+const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marketContent, execContent, financialContent, onClose }) => {
   const years = [0, 1, 2, 3, 4].map((y) => {
     const slice = projections.slice(y * 12, (y + 1) * 12);
     const revenue = slice.reduce((s, m) => s + (m.r || 0), 0);
@@ -784,14 +858,14 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
     <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur overflow-y-auto">
       <div className="sticky top-0 z-50 bg-white p-4 shadow-md print:hidden flex justify-between items-center border-b border-slate-200">
         <div className="font-bold text-slate-900 flex items-center gap-2">
-          <FileText className="text-blue-600" /> Anteprima Report Finale
+          <FileText className="text-blue-600" /> {t.pdf.preview}
         </div>
         <div className="flex gap-3">
           <button onClick={() => window.print()} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-blue-700 transition-all">
-            Stampa / Salva PDF
+            {t.pdf.print}
           </button>
           <button onClick={onClose} className="bg-slate-200 px-6 py-2 rounded-lg font-bold hover:bg-slate-300 transition-all">
-            Esci
+            {t.pdf.close}
           </button>
         </div>
       </div>
@@ -871,12 +945,12 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
 
         <Page pageNumber={7}>
           <h2 className="text-3xl font-bold text-slate-900 mb-10 border-b-2 border-slate-200 pb-4">{t.pdf.ch5}</h2>
-          <h3 className="text-lg font-bold text-slate-700 mb-4 italic">Conto Economico Previsionale (5 Anni)</h3>
+          <h3 className="text-lg font-bold text-slate-700 mb-4 italic">{t.pdf.pnlTitle}</h3>
 
           <table className="w-full text-xs font-mono border-collapse mb-10 border border-slate-200">
             <thead>
               <tr className="bg-slate-900 text-white">
-                <th className="p-3 text-left border border-slate-800">Voce</th>
+                <th className="p-3 text-left border border-slate-800">{t.table.item}</th>
                 {years.map((_, i) => (
                   <th key={i} className="p-3 text-right border border-slate-800">
                     Y{i + 1}
@@ -885,24 +959,24 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
               </tr>
             </thead>
             <tbody>
-              {[
-                { label: "Ricavi", key: "revenue" },
-                { label: "Costi Variabili", key: "varCosts" },
-                { label: "Margine Contr.", key: "mc" },
-                { label: "Costi Fissi", key: "fixed" },
-                { label: "EBITDA", key: "ebitda" },
-              ].map((row) => (
+                {[
+                  { label: t.table.rows[0], key: "revenue" },
+                  { label: t.table.rows[1], key: "varCosts" },
+                  { label: t.table.rows[2], key: "mc" },
+                  { label: t.table.rows[3], key: "fixed" },
+                  { label: t.table.rows[4], key: "ebitda" },
+                ].map((row) => (
                 <tr key={row.key} className={row.key === "ebitda" ? "bg-slate-50 font-bold" : ""}>
                   <td className="p-3 border border-slate-200 font-sans">{row.label}</td>
                   {years.map((y, i) => (
                     <td key={i} className="p-3 text-right border border-slate-200 italic">
-                      €{Math.round(y[row.key]).toLocaleString()}
+                      €{formatCurrencyByLang(y[row.key], lang)}
                     </td>
                   ))}
                 </tr>
               ))}
               <tr className="bg-blue-50 font-bold">
-                <td className="p-3 border border-slate-200 font-sans">EBITDA Margin</td>
+                <td className="p-3 border border-slate-200 font-sans">{t.table.ebitdaMargin}</td>
                 {years.map((y, i) => (
                   <td key={i} className="p-3 text-right border border-slate-200 font-mono">
                     {(y.margin * 100).toFixed(1)}%
@@ -912,25 +986,34 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
             </tbody>
           </table>
 
+          <div className="mb-8">
+            <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.financeAiTitle}</h4>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <MarkdownRenderer content={financialContent || t.fallback.fin} />
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-8">
             <Card className="bg-slate-50">
-              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Break Even Analysis</h4>
+              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.breakEvenTitle}</h4>
               <p className="text-[10px] text-slate-500 mb-4 font-bold">
-                Pareggio a {Number.isFinite(bep.bepUnita) ? bep.bepUnita.toLocaleString() : "∞"} unità (Mese {bepMonth || "N/D"}).
+                {t.pdf.breakEvenText
+                  .replace("{units}", Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞")
+                  .replace("{month}", bepMonth || "N/A")}
               </p>
-              <BreakEvenChart bep={bep} pv={data.prezzoVendita} cv={data.costoVariabile} cf={data.costiFissi} />
+              <BreakEvenChart bep={bep} pv={data.prezzoVendita} cv={data.costoVariabile} cf={data.costiFissi} lang={lang} />
             </Card>
 
             <Card className="bg-slate-50">
-              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Bancabilità & Liquidità</h4>
+              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.creditTitle}</h4>
               <div className="space-y-3 pt-2">
                 <div className="flex justify-between items-center text-xs">
                   <span>DSCR Index</span>
                   <span className="font-black text-blue-600 text-lg">{String(ds.dscr)}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span>Fabbisogno Massimo</span>
-                  <span className="font-black text-red-600 text-lg">€{Math.round(fabbisogno).toLocaleString()}</span>
+                  <span>{t.pdf.maxNeed}</span>
+                  <span className="font-black text-red-600 text-lg">€{formatCurrencyByLang(fabbisogno, lang)}</span>
                 </div>
               </div>
             </Card>
@@ -1135,6 +1218,7 @@ const StepEconomics = ({ data, updateData }) => {
 
 const Dashboard = ({ data }) => {
   const t = useTranslation();
+  const lang = useLanguage();
   const sectors = useSectors();
   const [si, setSi] = useState(1);
   const [tab, setTab] = useState("financial");
@@ -1180,7 +1264,7 @@ const Dashboard = ({ data }) => {
   const fFin = useCallback(async () => {
     setCom((p) => ({ ...p, loading: true }));
     const res = await callWorker(WORKER_URLS.fin, t.prompts.fin(dE, bep, ds, eb, cf, roi, 0, sc.label));
-    const content = res.ok ? res.content : Fallbacks.fin(t, dE, bep, ds, eb, cf, roi, 0, sc.label);
+    const content = res.ok ? res.content : Fallbacks.fin(t, dE, bep, ds, eb, cf, roi, 0, sc.label, lang);
     setCom({ content, loading: false, mode: res.ok ? "live" : "fallback" });
   }, [t, dE, bep, ds, eb, cf, roi, sc.label]);
 
@@ -1197,7 +1281,7 @@ const Dashboard = ({ data }) => {
       setExec((p) => ({ ...p, loading: true }));
       const market = marketOverride ?? mkt.content;
       const res = await callWorker(WORKER_URLS.exec, t.prompts.exec(dE, bep, ds, eb, proj?.[0]?.r ?? 0, cf, roi, 0, market));
-      const content = res.ok ? res.content : Fallbacks.exec(t, dE, bep, ds, eb, cf, roi, 0);
+      const content = res.ok ? res.content : Fallbacks.exec(t, dE, bep, ds, eb, cf, roi, 0, lang);
       setExec({ content, loading: false, mode: res.ok ? "live" : "fallback" });
       return content;
     },
@@ -1223,6 +1307,7 @@ const Dashboard = ({ data }) => {
         <BusinessPlanReport
           data={dE}
           t={t}
+          lang={lang}
           bep={bep}
           projections={proj}
           cf={cf}
@@ -1230,6 +1315,7 @@ const Dashboard = ({ data }) => {
           eb={eb}
           marketContent={mkt.content}
           execContent={exec.content}
+          financialContent={com.content}
           onClose={() => setShowPdf(false)}
         />
       )}
@@ -1270,12 +1356,12 @@ const Dashboard = ({ data }) => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <MetricCard
           label={t.dashboard.bep}
-          value={Number.isFinite(bep.bepUnita) ? `${bep.bepUnita.toLocaleString()} u.` : "∞"}
-          sub={`Fatt: ${FinancialEngine.formatMoney(bep.bepFatturato)}`}
+          value={Number.isFinite(bep.bepUnita) ? `${formatNumberByLang(bep.bepUnita, lang)} u.` : "∞"}
+          sub={`Fatt: ${FinancialEngine.formatMoney(bep.bepFatturato, lang)}`}
           icon={AlertCircle}
         />
         <MetricCard label={t.dashboard.margin} value={`${bep.mcPerc}%`} sub={`€${bep.margin}/u`} icon={PieChart} />
-        <MetricCard label={t.dashboard.burn} value={FinancialEngine.formatMoney(cf.br)} sub={cf.rw ? `Runway: ${cf.rw}mo` : "Runway: ∞"} icon={Wallet} />
+        <MetricCard label={t.dashboard.burn} value={FinancialEngine.formatMoney(cf.br, lang)} sub={cf.rw ? `Runway: ${cf.rw}mo` : "Runway: ∞"} icon={Wallet} />
         <MetricCard label="ROI Y1" value={`${roi}%`} icon={TrendingUp} />
       </div>
 
@@ -1298,7 +1384,14 @@ const Dashboard = ({ data }) => {
               <h3 className="text-sm font-bold text-slate-700">{t.bepCard.title}</h3>
               <Badge color={COLORS.accent}>Enterprise Model</Badge>
             </div>
-            <BreakEvenChart bep={bep} pv={data.prezzoVendita} cv={data.costoVariabile} cf={data.costiFissi} projectedUnits={Math.round(data.unitaAnno1 * sc.mult)} />
+            <BreakEvenChart
+              bep={bep}
+              pv={data.prezzoVendita}
+              cv={data.costoVariabile}
+              cf={data.costiFissi}
+              projectedUnits={Math.round(data.unitaAnno1 * sc.mult)}
+              lang={lang}
+            />
           </Card>
 
           <Card className="bg-slate-900 text-white border-none shadow-xl h-full">
@@ -1309,8 +1402,8 @@ const Dashboard = ({ data }) => {
           </Card>
 
           <Card className="lg:col-span-3 bg-slate-50/50">
-            <h3 className="text-sm font-bold mb-4 text-slate-800 uppercase tracking-wider">Previsione Cassa (24 mesi)</h3>
-            <CashFlowChart flows={cf.f} />
+            <h3 className="text-sm font-bold mb-4 text-slate-800 uppercase tracking-wider">{t.pdf.cashFlowTitle}</h3>
+            <CashFlowChart flows={cf.f} lang={lang} />
           </Card>
         </div>
       )}
