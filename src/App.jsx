@@ -490,17 +490,6 @@ const MetricCard = ({ label, value, sub, icon: Icon, isPositive }) => (
   </div>
 );
 
-const SimulationBadge = ({ mode }) => {
-  const t = useTranslation();
-  if (!mode) return null;
-  return (
-    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
-      <span className={`w-1.5 h-1.5 rounded-full ${mode === "live" ? "bg-green-500" : "bg-amber-500"}`} />
-      {mode === "live" ? t.status.live : t.status.sim}
-    </div>
-  );
-};
-
 const AIStatus = ({ finMode, mktMode }) => (
   <div className="bg-slate-900 text-white rounded-lg p-3 shadow-md flex flex-col gap-2">
     <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
@@ -517,23 +506,53 @@ const AIStatus = ({ finMode, mktMode }) => (
   </div>
 );
 
+const SimulationBadge = ({ mode }) => {
+  const t = useTranslation();
+  if (!mode) return null;
+  return (
+    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
+      <span className={`w-1.5 h-1.5 rounded-full ${mode === "live" ? "bg-green-500" : "bg-amber-500"}`} />
+      {mode === "live" ? t.status.live : t.status.sim}
+    </div>
+  );
+};
+
 const MarkdownRenderer = ({ content }) => {
   if (!content) return null;
-  const stringContent = typeof content === 'string' ? content : JSON.stringify(content);
+  const stringContent = typeof content === "string" ? content : JSON.stringify(content);
   const html = stringContent
     .replace(/\*\*(.*?)\*\*/g, `<strong style="color:${COLORS.text};font-weight:700">$1</strong>`)
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/^### (.*$)/gm, `<h4 style="font-size:13px;font-weight:700;color:${COLORS.primary};margin:16px 0 8px;text-transform:uppercase">$1</h4>`)
-    .replace(/^## (.*$)/gm, `<h3 style="font-size:16px;font-weight:800;color:${COLORS.text};margin:24px 0 12px;border-bottom:1px solid ${COLORS.cardBorder};padding-bottom:6px">$1</h3>`)
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(
+      /^### (.*$)/gm,
+      `<h4 style="font-size:13px;font-weight:700;color:${COLORS.primary};margin:16px 0 8px;text-transform:uppercase">$1</h4>`
+    )
+    .replace(
+      /^## (.*$)/gm,
+      `<h3 style="font-size:16px;font-weight:800;color:${COLORS.text};margin:24px 0 12px;border-bottom:1px solid ${COLORS.cardBorder};padding-bottom:6px">$1</h3>`
+    )
     .replace(/^\|(.+)\|$/gm, (m) => {
-      const c = m.split("|").filter(x => x.trim());
-      if (c.every(x => /^[\s\-:]+$/.test(x))) return "";
-      return `<tr>${c.map(x => `<td style="padding:10px 12px;border:1px solid ${COLORS.cardBorder};font-size:12px;color:${COLORS.textMuted}">${x.trim()}</td>`).join("")}</tr>`;
+      const c = m.split("|").filter((x) => x.trim());
+      if (c.every((x) => /^[\s\-:]+$/.test(x))) return "";
+      return `<tr>${c
+        .map(
+          (x) =>
+            `<td style="padding:10px 12px;border:1px solid ${COLORS.cardBorder};font-size:12px;color:${COLORS.textMuted}">${x.trim()}</td>`
+        )
+        .join("")}</tr>`;
     })
-    .replace(/(<tr>.*?<\/tr>\n?)+/gs, m => `<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#F8FAFC;border:1px solid ${COLORS.cardBorder};border-radius:6px;overflow:hidden">${m}</table>`)
-    .replace(/^[\*\-] (.*$)/gm, `<div style="padding:4px 0 4px 20px;position:relative"><span style="position:absolute;left:4px;color:${COLORS.accent};font-weight:bold">•</span>$1</div>`)
+    .replace(
+      /(<tr>.*?<\/tr>\n?)+/gs,
+      (m) =>
+        `<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#F8FAFC;border:1px solid ${COLORS.cardBorder};border-radius:6px;overflow:hidden">${m}</table>`
+    )
+    .replace(
+      /^[\*\-] (.*$)/gm,
+      `<div style="padding:4px 0 4px 20px;position:relative"><span style="position:absolute;left:4px;color:${COLORS.accent};font-weight:bold">•</span>$1</div>`
+    )
     .replace(/\n\n/g, '<div style="height:12px"></div>')
-    .replace(/\n/g, '<br/>');
+    .replace(/\n/g, "<br/>");
+
   return <div className="text-sm leading-relaxed text-slate-600 font-sans" dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
@@ -700,7 +719,7 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
   const fabbisogno = minCash < 0 ? Math.abs(minCash) : 0;
 
   const Page = ({ children, pageNumber }) => (
-    <div className="w-[210mm] min-h-[297mm] bg-white mx-auto p-[20mm] relative shadow-lg mb-8 print:shadow-none print:mb-0 print:break-after-page flex flex-col font-sans">
+    <div className="w-[210mm] min-h-[297mm] bg-white mx-auto p-[20mm] relative shadow-lg mb-8 print:w-[210mm] print:h-[297mm] print:shadow-none print:m-0 print:break-after-page flex flex-col font-sans overflow-hidden">
       <div className="flex-1">{children}</div>
       <div className="mt-auto pt-4 border-t border-slate-200 flex justify-between text-[10px] text-slate-400">
         <span className="font-bold">{data.nomeAzienda} — Confidential Business Plan</span>
@@ -711,7 +730,14 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
   );
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur overflow-y-auto">
+    <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur overflow-y-auto print:static print:inset-auto print:w-full print:h-auto print:overflow-visible print:bg-white print:p-0 print:m-0">
+      <style>{`
+        @media print {
+          @page { size: A4; margin: 0; }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white; }
+        }
+      `}</style>
+      
       <div className="sticky top-0 z-50 bg-white p-4 shadow-md print:hidden flex justify-between items-center border-b border-slate-200">
         <div className="font-bold text-slate-900 flex items-center gap-2">
           <FileText className="text-blue-600" /> {t.pdf.preview}
@@ -726,7 +752,7 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
         </div>
       </div>
 
-      <div className="py-10">
+      <div className="py-10 print:py-0 print:m-0">
         <Page pageNumber={1}>
           <div className="h-full flex flex-col justify-center items-center text-center">
             <div className="w-40 h-40 bg-slate-900 rounded-[2.5rem] flex items-center justify-center text-white text-7xl font-black mb-12 shadow-2xl">
@@ -1162,7 +1188,7 @@ const Dashboard = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 pb-12 animate-in fade-in duration-700">
+    <div className="flex flex-col gap-6 pb-12 animate-in fade-in duration-700 print:pb-0 print:gap-0">
       {showPdf && (
         <BusinessPlanReport
           data={dE}
@@ -1180,134 +1206,135 @@ const Dashboard = ({ data }) => {
         />
       )}
 
-      <div className="flex justify-between items-start">
-        <div>
-          <h2 className="text-3xl font-bold text-slate-900">{data.nomeAzienda}</h2>
-          <Badge color={ds.bancabile ? COLORS.success : COLORS.danger}>Rating: {ds.giudizio}</Badge>
-        </div>
-
-        <div className="flex flex-col items-end gap-2">
-          <button
-            onClick={handleOpenPdf}
-            disabled={isGeneratingPdf}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg flex items-center gap-2 transform hover:-translate-y-0.5 transition-all disabled:opacity-60"
-          >
-            {isGeneratingPdf ? <RefreshCw className="animate-spin" size={18} /> : <Download size={18} />}
-            {t.dashboard.cta}
-          </button>
-          <AIStatus finMode={com.mode} mktMode={mkt.mode} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-4">
-        {scenarios.map((s, i) => (
-          <button
-            key={i}
-            onClick={() => setSi(i)}
-            className={`py-2 rounded-lg font-bold text-xs border transition-all ${
-              si === i ? "bg-slate-900 text-white shadow-md" : "bg-white text-slate-500 border-slate-200"
-            }`}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <MetricCard
-          label={t.dashboard.bep}
-          value={Number.isFinite(bep.bepUnita) ? `${formatNumberByLang(bep.bepUnita, lang)} u.` : "∞"}
-          sub={`Fatt: ${FinancialEngine.formatMoney(bep.bepFatturato, lang)}`}
-          icon={AlertCircle}
-        />
-        <MetricCard label={t.dashboard.margin} value={`${bep.mcPerc}%`} sub={`€${bep.margin}/u`} icon={PieChart} />
-        <MetricCard label={t.dashboard.burn} value={FinancialEngine.formatMoney(cf.br, lang)} sub={cf.rw ? `Runway: ${cf.rw}mo` : "Runway: ∞"} icon={Wallet} />
-        <MetricCard label="ROI Y1" value={`${roi}%`} icon={TrendingUp} />
-      </div>
-
-      <div className="flex gap-4 border-b">
-        {[{ id: "financial", l: t.tabs[0] }, { id: "market", l: t.tabs[1] }, { id: "summary", l: t.tabs[2] }].map((tb) => (
-          <button
-            key={tb.id}
-            onClick={() => setTab(tb.id)}
-            className={`pb-2 font-bold transition-all ${tab === tb.id ? "border-b-2 border-blue-600 text-blue-600" : "text-slate-400"}`}
-          >
-            {tb.l}
-          </button>
-        ))}
-      </div>
-
-      {tab === "financial" && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in slide-in-from-left-4">
-          <Card className="lg:col-span-2 bg-slate-50/50">
-            <div className="mb-4 flex justify-between items-center">
-              <h3 className="text-sm font-bold text-slate-700">{t.bepCard.title}</h3>
-              <Badge color={COLORS.accent}>Enterprise Model</Badge>
-            </div>
-            <BreakEvenChart
-              bep={bep}
-              pv={data.prezzoVendita}
-              cv={data.costoVariabile}
-              cf={data.costiFissi}
-              projectedUnits={Math.round(data.unitaAnno1 * sc.mult)}
-              lang={lang}
-            />
-          </Card>
-
-          <Card className="bg-slate-900 text-white border-none shadow-xl h-full">
-            <h3 className="text-xs font-bold mb-4 flex items-center gap-2 text-blue-400 uppercase tracking-widest">
-              <BrainCircuit size={14} /> AI Insights
-            </h3>
-            {com.loading ? <LoadingPulse text={t.fallback.fin} /> : <MarkdownRenderer content={com.content} />}
-          </Card>
-
-          <Card className="lg:col-span-3 bg-slate-50/50">
-            <h3 className="text-sm font-bold mb-4 text-slate-800 uppercase tracking-wider">{t.pdf.cashFlowTitle}</h3>
-            <CashFlowChart flows={cf.f} lang={lang} />
-          </Card>
-        </div>
-      )}
-
-      {tab === "market" && (
-        <Card className="animate-in slide-in-from-right-4">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold text-slate-800 uppercase tracking-widest">{t.marketCard.title}</h3>
-            <SimulationBadge mode={mkt.mode} />
+      <div className={showPdf ? "print:hidden flex flex-col gap-6" : "flex flex-col gap-6"}>
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-3xl font-bold text-slate-900">{data.nomeAzienda}</h2>
+            <Badge color={ds.bancabile ? COLORS.success : COLORS.danger}>Rating: {ds.giudizio}</Badge>
           </div>
-          {mkt.loading ? <LoadingPulse text={t.marketCard.loading} /> : <MarkdownRenderer content={mkt.content} />}
-        </Card>
-      )}
 
-      {tab === "summary" && (
-        <Card className="animate-in slide-in-from-right-4">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold text-slate-800 uppercase tracking-widest">{t.execCard.title}</h3>
-            <button onClick={() => fExec()} className="text-xs font-bold text-blue-600 flex items-center gap-1">
-              <RefreshCw size={12} /> {t.execCard.regenerate}
+          <div className="flex flex-col items-end gap-2">
+            <button
+              onClick={handleOpenPdf}
+              disabled={isGeneratingPdf}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg flex items-center gap-2 transform hover:-translate-y-0.5 transition-all disabled:opacity-60"
+            >
+              {isGeneratingPdf ? <RefreshCw className="animate-spin" size={18} /> : <Download size={18} />}
+              {t.dashboard.cta}
             </button>
+            <AIStatus finMode={com.mode} mktMode={mkt.mode} />
           </div>
+        </div>
 
-          {!exec.content && !exec.loading ? (
-            <div className="text-center py-20 text-slate-400">
-              <Rocket size={48} className="mx-auto mb-4 opacity-10" />
-              <p>{t.execCard.ready}</p>
-              <button onClick={() => fExec()} className="mt-4 bg-slate-900 text-white px-6 py-2 rounded font-bold">
-                {t.execCard.generate}
+        <div className="grid grid-cols-3 gap-4">
+          {scenarios.map((s, i) => (
+            <button
+              key={i}
+              onClick={() => setSi(i)}
+              className={`py-2 rounded-lg font-bold text-xs border transition-all ${
+                si === i ? "bg-slate-900 text-white shadow-md" : "bg-white text-slate-500 border-slate-200"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <MetricCard
+            label={t.dashboard.bep}
+            value={Number.isFinite(bep.bepUnita) ? `${formatNumberByLang(bep.bepUnita, lang)} u.` : "∞"}
+            sub={`Fatt: ${FinancialEngine.formatMoney(bep.bepFatturato, lang)}`}
+            icon={AlertCircle}
+          />
+          <MetricCard label={t.dashboard.margin} value={`${bep.mcPerc}%`} sub={`€${bep.margin}/u`} icon={PieChart} />
+          <MetricCard label={t.dashboard.burn} value={FinancialEngine.formatMoney(cf.br, lang)} sub={cf.rw ? `Runway: ${cf.rw}mo` : "Runway: ∞"} icon={Wallet} />
+          <MetricCard label="ROI Y1" value={`${roi}%`} icon={TrendingUp} />
+        </div>
+
+        <div className="flex gap-4 border-b">
+          {[{ id: "financial", l: t.tabs[0] }, { id: "market", l: t.tabs[1] }, { id: "summary", l: t.tabs[2] }].map((tb) => (
+            <button
+              key={tb.id}
+              onClick={() => setTab(tb.id)}
+              className={`pb-2 font-bold transition-all ${tab === tb.id ? "border-b-2 border-blue-600 text-blue-600" : "text-slate-400"}`}
+            >
+              {tb.l}
+            </button>
+          ))}
+        </div>
+
+        {tab === "financial" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in slide-in-from-left-4">
+            <Card className="lg:col-span-2 bg-slate-50/50">
+              <div className="mb-4 flex justify-between items-center">
+                <h3 className="text-sm font-bold text-slate-700">{t.bepCard.title}</h3>
+                <Badge color={COLORS.accent}>Enterprise Model</Badge>
+              </div>
+              <BreakEvenChart
+                bep={bep}
+                pv={data.prezzoVendita}
+                cv={data.costoVariabile}
+                cf={data.costiFissi}
+                projectedUnits={Math.round(data.unitaAnno1 * sc.mult)}
+                lang={lang}
+              />
+            </Card>
+
+            <Card className="bg-slate-900 text-white border-none shadow-xl h-full">
+              <h3 className="text-xs font-bold mb-4 flex items-center gap-2 text-blue-400 uppercase tracking-widest">
+                <BrainCircuit size={14} /> AI Insights
+              </h3>
+              {com.loading ? <LoadingPulse text={t.fallback.fin} /> : <MarkdownRenderer content={com.content} />}
+            </Card>
+
+            <Card className="lg:col-span-3 bg-slate-50/50">
+              <h3 className="text-sm font-bold mb-4 text-slate-800 uppercase tracking-wider">{t.pdf.cashFlowTitle}</h3>
+              <CashFlowChart flows={cf.f} lang={lang} />
+            </Card>
+          </div>
+        )}
+
+        {tab === "market" && (
+          <Card className="animate-in slide-in-from-right-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-slate-800 uppercase tracking-widest">{t.marketCard.title}</h3>
+              <SimulationBadge mode={mkt.mode} />
+            </div>
+            {mkt.loading ? <LoadingPulse text={t.marketCard.loading} /> : <MarkdownRenderer content={mkt.content} />}
+          </Card>
+        )}
+
+        {tab === "summary" && (
+          <Card className="animate-in slide-in-from-right-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-slate-800 uppercase tracking-widest">{t.execCard.title}</h3>
+              <button onClick={() => fExec()} className="text-xs font-bold text-blue-600 flex items-center gap-1">
+                <RefreshCw size={12} /> {t.execCard.regenerate}
               </button>
             </div>
-          ) : exec.loading ? (
-            <LoadingPulse text={t.execCard.generating} />
-          ) : (
-            <MarkdownRenderer content={exec.content} />
-          )}
-        </Card>
-      )}
+
+            {!exec.content && !exec.loading ? (
+              <div className="text-center py-20 text-slate-400">
+                <Rocket size={48} className="mx-auto mb-4 opacity-10" />
+                <p>{t.execCard.ready}</p>
+                <button onClick={() => fExec()} className="mt-4 bg-slate-900 text-white px-6 py-2 rounded font-bold">
+                  {t.execCard.generate}
+                </button>
+              </div>
+            ) : exec.loading ? (
+              <LoadingPulse text={t.execCard.generating} />
+            ) : (
+              <MarkdownRenderer content={exec.content} />
+            )}
+          </Card>
+        )}
+      </div>
     </div>
   );
 };
 
 // --- APP ROOT ---
-// NOTA: t qui lo calcoliamo "safe" senza hook, poi i componenti usano useTranslation() dentro Provider.
 
 export default function App() {
   const [lang, setLang] = useState("it");
@@ -1349,8 +1376,8 @@ export default function App() {
 
   return (
     <LanguageContext.Provider value={lang}>
-      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100">
-        <header className="bg-white border-b h-16 flex items-center px-8 justify-between shadow-sm sticky top-0 z-40">
+      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 print:bg-white">
+        <header className="bg-white border-b h-16 flex items-center px-8 justify-between shadow-sm sticky top-0 z-40 print:hidden">
           <div className="flex items-center gap-2 font-bold text-lg">
             <div className="w-8 h-8 bg-slate-900 rounded-lg text-white flex items-center justify-center shadow-inner">C</div>
             <span>CFO AI Planner</span>
@@ -1405,8 +1432,8 @@ export default function App() {
           </div>
         </header>
 
-        <div className="max-w-6xl mx-auto px-6 py-10">
-          <div className="flex justify-center mb-12">
+        <div className="max-w-6xl mx-auto px-6 py-10 print:p-0 print:m-0">
+          <div className="flex justify-center mb-12 print:hidden">
             <div className="flex items-center bg-white p-1 rounded-full border border-slate-200 shadow-sm overflow-hidden">
               {steps.map((s, i) => (
                 <button
@@ -1429,7 +1456,7 @@ export default function App() {
             {step === 3 && <Dashboard data={data} />}
 
             {step < 3 && (
-              <div className="flex justify-between mt-12 pt-8 border-t border-slate-200 max-w-4xl mx-auto">
+              <div className="flex justify-between mt-12 pt-8 border-t border-slate-200 max-w-4xl mx-auto print:hidden">
                 <button
                   onClick={() => setStep((s) => Math.max(0, s - 1))}
                   disabled={step === 0}
