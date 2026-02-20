@@ -1,69 +1,50 @@
-import React, {
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
-  createContext,
-  useContext,
-} from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Rocket,
-  PieChart,
-  FileText,
-  TrendingUp,
-  AlertCircle,
-  RefreshCw,
-  Wallet,
-  BrainCircuit,
-  Server,
-  Download,
-  X,
-  History,
-  UserPlus,
-  Trash2,
+import React, { useState, useMemo, useCallback, useEffect, useRef, createContext, useContext } from "react";
+import { 
+  ArrowLeft, ArrowRight, Rocket, BarChart3, PieChart, FileText, 
+  TrendingUp, TrendingDown, AlertCircle, CheckCircle, RefreshCw, 
+  Building2, Wallet, Users, LayoutDashboard, BrainCircuit, Search,
+  Server, Sliders, Printer, Download, ChevronRight, X,
+  History, ShieldAlert, Award, Edit2, Save, Globe, Megaphone,
+  UserPlus, Trash2
 } from "lucide-react";
 
-// --- CONFIGURAZIONE E COSTANTI (ENTERPRISE THEME) ---
+// --- CONFIGURAZIONE E COSTANTI ---
 
 const COLORS = {
-  bg: "#F8FAFC",
-  surface: "#FFFFFF",
-  input: "#FFFFFF",
-  inputBorder: "#E2E8F0",
-  cardBorder: "#E2E8F0",
-  text: "#0F172A",
-  textMuted: "#64748B",
-  textLight: "#94A3B8",
-  primary: "#0F172A",
-  accent: "#2563EB",
-  accentSoft: "#EFF6FF",
-  success: "#16A34A",
-  successBg: "#DCFCE7",
-  danger: "#DC2626",
-  dangerBg: "#FEE2E2",
-  warning: "#D97706",
-  warningBg: "#FEF3C7",
-  purple: "#7C3AED",
-  purpleBg: "#F3E8FF",
-  cyan: "#0891B2",
-  cyanBg: "#ECFEFF",
+  bg: "#F8FAFC",          
+  surface: "#FFFFFF",     
+  input: "#FFFFFF",       
+  inputBorder: "#E2E8F0", 
+  cardBorder: "#E2E8F0",  
+  text: "#0F172A",        
+  textMuted: "#64748B",   
+  textLight: "#94A3B8",   
+  primary: "#0F172A",     
+  accent: "#2563EB",      
+  accentSoft: "#EFF6FF",  
+  success: "#16A34A",     
+  successBg: "#DCFCE7",   
+  danger: "#DC2626",      
+  dangerBg: "#FEE2E2",    
+  warning: "#D97706",     
+  warningBg: "#FEF3C7",   
+  purple: "#7C3AED",      
+  purpleBg: "#F3E8FF",    
+  cyan: "#0891B2",        
+  cyanBg: "#ECFEFF",      
 };
 
-const LEGAL_DISCLAIMER =
-  "DISCLAIMER LEGALE: Le presenti proiezioni finanziarie si basano su stime e ipotesi fornite dall'utente e rielaborate da algoritmi di intelligenza artificiale. I risultati passati o previsti non costituiscono garanzia di performance future. Il documento è generato a scopo di pianificazione interna e non sostituisce la consulenza professionale certificata.";
+const LEGAL_DISCLAIMER = "DISCLAIMER LEGALE: Le presenti proiezioni finanziarie si basano su stime e ipotesi fornite dall'utente e rielaborate da algoritmi di intelligenza artificiale. I risultati passati o previsti non costituiscono garanzia di performance future. Il documento è generato a scopo di pianificazione interna e non sostituisce la consulenza professionale certificata.";
 
 const WORKER_URLS = {
   fin: "https://financial-worker.pierluigimonaco2.workers.dev",
   mkt: "https://market-ai-worker.pierluigimonaco2.workers.dev",
-  exec: "https://financial-worker.pierluigimonaco2.workers.dev",
+  exec: "https://financial-worker.pierluigimonaco2.workers.dev" 
 };
 
 const LanguageContext = createContext("it");
 
 // --- LOCALIZZAZIONE (i18n) ---
-// IMPORTANTISSIMO: non svuotare mai it. en può mancare o essere parziale.
 
 const i18n = {
   it: {
@@ -81,24 +62,22 @@ const i18n = {
       suggestion: "Benchmark Settore",
       apply: "Applica Benchmark",
       target: "Target",
-      targets: {
-        b2b: "B2B — Aziende",
-        b2c: "B2C — Consumatori",
-        b2b2c: "B2B2C — Misto",
-      },
+      targets: { b2b: "B2B — Aziende", b2c: "B2C — Consumatori", b2b2c: "B2B2C — Misto" },
       mixTitle: "Strategia Operativa (Marketing Mix)",
-      mixProduct: "Prodotto/Servizio",
+      mixProduct: "Prodotto",
       mixPlace: "Distribuzione",
-      mixPromo: "Promozione",
+      mixPromo: "Promozione"
     },
     sTeam: {
       title: "Fattibilità Imprenditoriale",
       subtitle: "Il Team è il primo fattore di valutazione per gli investitori.",
-      addBtn: "Aggiungi Membro",
+      addBtn: "Aggiungi",
+      nameLabel: "Nome & Cognome",
+      roleLabel: "Ruolo aziendale",
       bioLabel: "Bio / Competenze (Input AI)",
       bioHint: "Es: 'PhD in IA e 10 anni in logistica'",
       founder: "Socio Fondatore",
-      manager: "Key Manager",
+      manager: "Key Manager"
     },
     s2: {
       title: "Unit Economics",
@@ -110,7 +89,7 @@ const i18n = {
       growth: "Crescita annua",
       debtTitle: "Debito (opzionale)",
       debtCapital: "Quota capitale annua",
-      debtInterest: "Quota interessi annua",
+      debtInterest: "Quota interessi annua"
     },
     dashboard: {
       note: "Motore deterministico JS + Analisi AI",
@@ -125,7 +104,7 @@ const i18n = {
       runwayInf: "Runway: ∞ ✓",
       cta: "SCARICA BUSINESS PLAN COMPLETO (PDF)",
       audit: "Audit Trail",
-      history: "Cronologia Modifiche",
+      history: "Cronologia Modifiche"
     },
     scenarios: ["Pessimistico", "Realistico", "Ottimistico"],
     tabs: ["Financial", "Mercato", "Exec. Summary"],
@@ -135,18 +114,10 @@ const i18n = {
       rev: "Ricavi",
       costsTot: "Costi Tot.",
       qty: "Quantità",
-      forecast: "Previsione Y1",
+      forecast: "Previsione Y1"
     },
     marketCard: { title: "Analisi di Mercato", loading: "Scansione competitiva in corso..." },
-    execCard: {
-      title: "Executive Summary",
-      readySub: "Analisi strategica generata dall'AI Strategist.",
-      generate: "Genera Summary",
-      regenerate: "Rigenera",
-      ready: "Analisi Pronta",
-      click: "Clicca per avviare.",
-      generating: "Scrittura in corso...",
-    },
+    execCard: { title: "Executive Summary", readySub: "Analisi strategica generata dall'AI Strategist.", generate: "Genera Summary", regenerate: "Rigenera", ready: "Analisi Pronta", click: "Clicca per avviare.", generating: "Scrittura in corso..." },
     status: { live: "LIVE", sim: "SIMULAZIONE" },
     fallback: {
       fin: "Analisi finanziaria in elaborazione.",
@@ -159,103 +130,89 @@ const i18n = {
       runway: "Autonomia:",
       months: "mesi",
       competitors: "Analisi Competitor",
-      swot: "Analisi SWOT",
+      swot: "Analisi SWOT"
     },
     prompts: {
-      fin: (d, b, ds, eb, cf, roi, ros, sc) =>
-        `Sei un analista finanziario senior. Analizza: ${d.nomeAzienda} (${d._sl}). BEP: ${b.bepUnita}u. EBITDA: €${Math.round(
-          eb
-        )}. DSCR: ${ds.dscr}. Scenario: ${sc}. Commenta in italiano professionale.`,
-      mkt: (d) =>
-        `Analizza il mercato per ${d.nomeAzienda}, settore ${d._sl}. Descrizione: ${d.descrizione}. TAM/SAM/SOM e Competitor.`,
-      exec: (d, b, ds, eb, rY, cf, roi, ros, m) =>
-        `Chief Strategy Officer. Executive Summary per ${d.nomeAzienda}. Idea: ${d.descrizione}. BEP ${b.bepUnita}u, DSCR ${ds.dscr}, EBITDA €${Math.round(
-          eb
-        )}. Focus su SWOT e Richiesta Capitale. Italiano.`,
+        fin: (d, b, ds, eb, cf, roi, ros, sc) => `Sei un analista finanziario senior. Analizza: ${d.nomeAzienda} (${d._sl}). BEP: ${b.bepUnita}u. EBITDA: €${Math.round(eb)}. DSCR: ${ds.dscr}. Scenario: ${sc}. Commenta in italiano professionale.`,
+        mkt: (d) => `Analizza il mercato per ${d.nomeAzienda}, settore ${d._sl}. Descrizione: ${d.descrizione}. In italiano: TAM/SAM/SOM, Tabella Competitor, SWOT.`,
+        exec: (d, b, ds, eb, rY, cf, roi, ros, m) => `Chief Strategy Officer. Executive Summary per ${d.nomeAzienda}. Idea: ${d.descrizione}. BEP ${b.bepUnita}u, DSCR ${ds.dscr}, EBITDA €${Math.round(eb)}. Focus su SWOT e Richiesta Capitale. Italiano.`
     },
-    pdf: {
-      index: "Indice",
-      ch1: "1. Executive Summary",
-      ch2: "2. Il Team e la Governance",
-      ch3: "3. Analisi di Mercato (TAM/SAM/SOM)",
-      ch4: "4. Strategia Operativa e Roadmap",
-      ch5: "5. Piano Economico-Finanziario (PEF)",
-      mix: "Marketing Mix (4P)",
-      gantt: "Roadmap di Esecuzione (Gantt)",
+    pdf: { 
+        index: "Indice", 
+        ch1: "1. Executive Summary", 
+        ch2: "2. Il Team e la Governance", 
+        ch3: "3. Analisi di Mercato (TAM/SAM/SOM)", 
+        ch4: "4. Strategia Operativa e Roadmap", 
+        ch5: "5. Piano Economico-Finanziario (PEF)",
+        mix: "Marketing Mix (4P)",
+        gantt: "Roadmap di Esecuzione (Gantt)",
+        preview: "Anteprima Report Finale",
+        print: "Stampa / Salva PDF",
+        close: "Esci",
+        pnlTitle: "Conto Economico Previsionale (5 Anni)",
+        breakEvenTitle: "Analisi Break Even",
+        breakEvenText: "Pareggio a {units} unità (Mese {month}).",
+        creditTitle: "Bancabilità & Liquidità",
+        maxNeed: "Fabbisogno Massimo",
+        cashFlowTitle: "Cash Flow (24 mesi)",
+        financeAiTitle: "Considerazioni AI Financial",
     },
     table: {
       title: "PEF — Proiezioni 5 Anni",
       item: "Voce",
       year: "Anno",
       rows: ["Ricavi", "Costi Var.", "Margine Contr.", "Costi Fissi", "EBITDA"],
+      ebitdaMargin: "Margine EBITDA",
     },
-    sectors: {
-      saas: "SaaS",
-      ecom: "E-Commerce",
-      risto: "Ristorazione",
-      cons: "Consulenza",
-      manif: "Manifattura",
-      health: "Healthcare",
-    },
-    hints: {
-      saas: "Cloud architecture",
-      ecom: "Logistica store",
-      risto: "Food operations",
-      cons: "Human capital",
-      manif: "Asset industriali",
-      health: "Certificazioni",
-    },
+    sectors: { saas: "SaaS", ecom: "E-Commerce", risto: "Ristorazione", cons: "Consulenza", manif: "Manifattura", health: "Healthcare" },
+    hints: { saas: "Cloud architecture", ecom: "Logistica store", risto: "Food operations", cons: "Human capital", manif: "Asset industriali", health: "Certificazioni" }
   },
-
-  // EN COMPLETO (puoi ridurlo, ma NON cancellare it)
+  
+  // EN COMPLETO
   en: {
     steps: ["Company", "Team", "Economics", "Dashboard"],
     nav: ["Back", "Next", "Generate Dashboard"],
     actions: { edit: "Edit", save: "Save" },
     s1: {
-      title: "Your company",
-      subtitle: "Basic information for the Business Plan.",
+      title: "Your Company",
+      subtitle: "Basic information.",
       name: "Company Name",
-      sector: "Sector",
-      desc: "Idea description",
-      descHint: "E.g.: Green logistics route optimization algorithms",
+      sector: "Industry",
+      desc: "Description",
+      descHint: "E.g.: AI route optimization",
       capital: "Initial Capital",
-      suggestion: "Sector Benchmark",
+      suggestion: "Industry Benchmark",
       apply: "Apply Benchmark",
       target: "Target",
-      targets: {
-        b2b: "B2B — Companies",
-        b2c: "B2C — Consumers",
-        b2b2c: "B2B2C — Mixed",
-      },
-      mixTitle: "Operating Strategy (Marketing Mix)",
-      mixProduct: "Product/Service",
-      mixPlace: "Distribution",
-      mixPromo: "Promotion",
+      targets: { b2b: "B2B — Business", b2c: "B2C — Consumer", b2b2c: "B2B2C — Mixed" },
+      mixTitle: "Operational Strategy (Marketing Mix)",
+      mixProduct: "Product",
+      mixPlace: "Place",
+      mixPromo: "Promotion"
     },
     sTeam: {
-      title: "Entrepreneurial feasibility",
-      subtitle: "The team is the primary factor for investors.",
-      addBtn: "Add member",
-      bioLabel: "Bio / Skills (AI input)",
-      bioHint: "E.g.: 'PhD in AI and 10 years in logistics'",
-      founder: "Co-Founder",
-      manager: "Key Manager",
+      title: "Team Feasibility",
+      subtitle: "Team is the key factor.",
+      addBtn: "Add",
+      nameLabel: "Name & Surname",
+      roleLabel: "Company Role",
+      bioLabel: "Bio / Skills (AI Input)",
+      bioHint: "Describe key successes"
     },
     s2: {
-      title: "Unit economics",
-      subtitle: "The numbers of your business model.",
-      price: "Average price",
-      costVar: "Unit variable cost",
-      costFixed: "Annual fixed costs",
-      units: "Units sold Year 1",
-      growth: "Annual growth",
+      title: "Unit Economics",
+      subtitle: "Business numbers.",
+      price: "Avg Price",
+      costVar: "Variable Cost",
+      costFixed: "Fixed Costs",
+      units: "Units Year 1",
+      growth: "Annual Growth",
       debtTitle: "Debt (optional)",
-      debtCapital: "Annual principal",
-      debtInterest: "Annual interest",
+      debtCapital: "Annual Principal",
+      debtInterest: "Annual Interest"
     },
     dashboard: {
-      note: "Deterministic JS engine + AI analysis",
+      note: "Deterministic JS + AI Insights",
       bep: "Break Even",
       margin: "Margin",
       burn: "Burn Rate",
@@ -265,119 +222,73 @@ const i18n = {
       month: "/mo",
       runway: "Runway",
       runwayInf: "Runway: ∞ ✓",
-      cta: "DOWNLOAD FULL BUSINESS PLAN (PDF)",
+      cta: "DOWNLOAD PDF",
       audit: "Audit Trail",
-      history: "Change History",
+      history: "History"
     },
     scenarios: ["Pessimistic", "Realistic", "Optimistic"],
     tabs: ["Financial", "Market", "Exec. Summary"],
-    bepCard: {
-      title: "Break Even Analysis",
-      subtitle: "Break-even point between volume and profit",
-      rev: "Revenue",
-      costsTot: "Total Costs",
-      qty: "Quantity",
-      forecast: "Y1 Forecast",
-    },
-    marketCard: { title: "Market Analysis", loading: "Competitive scan in progress..." },
-    execCard: {
-      title: "Executive Summary",
-      readySub: "Strategic analysis generated by the AI Strategist.",
-      generate: "Generate Summary",
-      regenerate: "Regenerate",
-      ready: "Analysis Ready",
-      click: "Click to start.",
-      generating: "Writing in progress...",
-    },
+    bepCard: { title: "Break Even Point", forecast: "Forecast Y1" },
+    marketCard: { title: "Market Analysis" },
+    execCard: { title: "Executive Summary", readySub: "Strategic analysis generated by AI." },
     status: { live: "LIVE", sim: "SIMULATION" },
-    fallback: {
-      fin: "Financial analysis in progress.",
-      bepReached: "Break-even reached at",
-      units: "units",
-      dscrOk: "Solid DSCR.",
-      dscrNo: "Weak DSCR.",
-      ebitda: "Forecast EBITDA:",
-      noRisk: "Financial solidity verified.",
-      runway: "Runway:",
-      months: "months",
-      competitors: "Competitor Analysis",
-      swot: "SWOT Analysis",
-    },
+    fallback: { bepReached: "BEP at", units: "units", dscrOk: "Solid DSCR", dscrNo: "Weak DSCR", ebitda: "EBITDA:", noRisk: "No cash risk", fin: "Analysis", competitors: "Competitors", swot: "SWOT" },
     prompts: {
-      fin: (d, b, ds, eb, cf, roi, ros, sc) =>
-        `You are a senior financial analyst. Analyze: ${d.nomeAzienda} (${d._sl}). BEP: ${b.bepUnita}u. EBITDA: €${Math.round(
-          eb
-        )}. DSCR: ${ds.dscr}. Scenario: ${sc}. Professional English commentary.`,
-      mkt: (d) =>
-        `Analyze the market for ${d.nomeAzienda}, sector ${d._sl}. Description: ${d.descrizione}. TAM/SAM/SOM and competitors.`,
-      exec: (d, b, ds, eb, rY, cf, roi, ros, m) =>
-        `Chief Strategy Officer. Executive Summary for ${d.nomeAzienda}. Idea: ${d.descrizione}. BEP ${b.bepUnita}u, DSCR ${ds.dscr}, EBITDA €${Math.round(
-          eb
-        )}. Focus on SWOT and capital request. English.`,
+        fin: (d, b, ds, eb, cf, roi, ros, sc) => `You are a senior financial analyst. Analyze: ${d.nomeAzienda} (${d._sl}). BEP: ${b.bepUnita}u. EBITDA: €${Math.round(eb)}. DSCR: ${ds.dscr}. Scenario: ${sc}. Professional English commentary.`,
+        mkt: (d) => `Analyze the market for ${d.nomeAzienda}, sector ${d._sl}. Description: ${d.descrizione}. TAM/SAM/SOM and competitors.`,
+        exec: (d, b, ds, eb, rY, cf, roi, ros, m) => `Chief Strategy Officer. Executive Summary for ${d.nomeAzienda}. Idea: ${d.descrizione}. BEP ${b.bepUnita}u, DSCR ${ds.dscr}, EBITDA €${Math.round(eb)}. Focus on SWOT and capital request. English.`
     },
-    pdf: {
-      index: "Index",
-      ch1: "1. Executive Summary",
-      ch2: "2. Team & Governance",
-      ch3: "3. Market Analysis (TAM/SAM/SOM)",
-      ch4: "4. Operating Strategy & Roadmap",
-      ch5: "5. Financial Plan (PEF)",
+    pdf: { 
+      index: "Index", 
+      ch1: "1. Executive Summary", 
+      ch2: "2. Team & Governance", 
+      ch3: "3. Market Analysis (TAM/SAM/SOM)", 
+      ch4: "4. Operating Strategy & Roadmap", 
+      ch5: "5. Financial Plan (PEF)", 
       mix: "Marketing Mix (4P)",
       gantt: "Execution Roadmap (Gantt)",
+      preview: "Final report preview",
+      print: "Print / Save PDF",
+      close: "Close",
+      pnlTitle: "Projected Income Statement (5 Years)",
+      breakEvenTitle: "Break-Even Analysis",
+      breakEvenText: "Break-even at {units} units (Month {month}).",
+      creditTitle: "Creditworthiness & Liquidity",
+      maxNeed: "Maximum Funding Need",
+      cashFlowTitle: "Cash Flow (24 months)",
+      financeAiTitle: "AI Financial Considerations",
     },
     table: {
       title: "Financial Plan — 5-Year Projections",
       item: "Item",
       year: "Year",
       rows: ["Revenue", "Var. Costs", "Contribution Margin", "Fixed Costs", "EBITDA"],
+      ebitdaMargin: "EBITDA Margin",
     },
-    sectors: {
-      saas: "SaaS",
-      ecom: "E-Commerce",
-      risto: "Restaurant",
-      cons: "Consulting",
-      manif: "Manufacturing",
-      health: "Healthcare",
-    },
-    hints: {
-      saas: "Cloud architecture",
-      ecom: "Store logistics",
-      risto: "Food operations",
-      cons: "Human capital",
-      manif: "Industrial assets",
-      health: "Certifications",
-    },
-  },
+    sectors: { saas: "SaaS", ecom: "E-Commerce", risto: "Restaurant", cons: "Consulting", manif: "Manufacturing", health: "Healthcare" },
+    hints: { saas: "Software", ecom: "Store", risto: "Food", cons: "Consulting", manif: "Manufacturing", health: "Healthcare" }
+  }
 };
 
-// --- CORE HOOKS ---
+// --- UTILITIES & HOOKS ---
 
 const useLanguage = () => useContext(LanguageContext);
+
+const getLocale = (lang) => (lang === "en" ? "en-US" : "it-IT");
+
+const formatNumberByLang = (value, lang, options = {}) =>
+  new Intl.NumberFormat(getLocale(lang), options).format(Number.isFinite(value) ? value : 0);
+
+const formatCurrencyByLang = (value, lang) => {
+  if (!Number.isFinite(value)) return "∞";
+  return new Intl.NumberFormat(getLocale(lang), { maximumFractionDigits: 0 }).format(Math.round(value));
+};
 
 function useTranslation() {
   const lang = useLanguage();
   const candidate = i18n?.[lang];
-  // fallback robusto: se en è vuoto/parziale, almeno non esplode
   return candidate && Object.keys(candidate).length ? candidate : i18n.it;
 }
-
-function useSectors() {
-  const t = useTranslation();
-  return useMemo(() => {
-    const s = t?.sectors || i18n.it.sectors;
-    const h = t?.hints || i18n.it.hints;
-    return {
-      saas: { label: s.saas, cf: 120000, p: 49, cv: 5, cr: 0.4, hint: h.saas },
-      ecom: { label: s.ecom, cf: 80000, p: 35, cv: 15, cr: 0.25, hint: h.ecom },
-      risto: { label: s.risto, cf: 150000, p: 18, cv: 6, cr: 0.08, hint: h.risto },
-      cons: { label: s.cons, cf: 60000, p: 150, cv: 20, cr: 0.2, hint: h.cons },
-      manif: { label: s.manif, cf: 250000, p: 80, cv: 35, cr: 0.12, hint: h.manif },
-      health: { label: s.health, cf: 300000, p: 200, cv: 60, cr: 0.3, hint: h.health },
-    };
-  }, [t]);
-}
-
-// --- WORKER CALL ---
 
 async function callWorker(url, prompt) {
   try {
@@ -387,25 +298,38 @@ async function callWorker(url, prompt) {
       body: JSON.stringify({ prompt }),
     });
     const data = await response.json();
-    return data?.success ? { ok: true, content: data.content } : { ok: false };
+    return data.success ? { ok: true, content: data.content } : { ok: false };
   } catch {
     return { ok: false };
   }
 }
 
-// --- FINANCIAL ENGINE ---
+function useSectors() {
+  const t = useTranslation();
+  return useMemo(() => {
+    const s = t?.sectors || i18n.it.sectors;
+    const h = t?.hints || i18n.it.hints;
+    return {
+      saas: { label: s.saas, cf: 120000, p: 49,  cv: 5,  cr: 0.4,  hint: h.saas },
+      ecom: { label: s.ecom, cf: 80000,  p: 35,  cv: 15, cr: 0.25, hint: h.ecom },
+      risto:{ label: s.risto,cf: 150000, p: 18,  cv: 6,  cr: 0.08, hint: h.risto },
+      cons: { label: s.cons, cf: 60000,  p: 150, cv: 20, cr: 0.2,  hint: h.cons },
+      manif:{ label: s.manif,cf: 250000, p: 80,  cv: 35, cr: 0.12, hint: h.manif },
+      health:{label: s.health,cf: 300000,p: 200, cv: 60, cr: 0.3,  hint: h.health },
+    };
+  }, [t]);
+}
 
 const FinancialEngine = {
   calcBEP: (p, cv, cf) => {
     const m = p - cv;
-    if (m <= 0)
-      return { bepUnita: Infinity, bepFatturato: Infinity, margin: m, mcPerc: 0, errore: true };
-    return {
-      bepUnita: Math.ceil(cf / m),
-      bepFatturato: Math.round(cf / (m / p)),
-      margin: m,
-      mcPerc: Math.round((m / p) * 10000) / 100,
-      errore: false,
+    if (m <= 0) return { bepUnita: Infinity, bepFatturato: Infinity, margin: m, mcPerc: 0, errore: true };
+    return { 
+      bepUnita: Math.ceil(cf / m), 
+      bepFatturato: Math.round(cf / (m / p)), 
+      margin: m, 
+      mcPerc: Math.round((m / p) * 10000) / 100, 
+      errore: false 
     };
   },
   calcDSCR: (ebitda, cap, int) => {
@@ -415,27 +339,16 @@ const FinancialEngine = {
     const d = Math.round((r / s) * 100) / 100;
     return { dscr: d, giudizio: d >= 1.2 ? "BUONO" : "DEBOLE", bancabile: d >= 1.2 };
   },
-  calcCashFlow: (cap, revs, vars, fixedAnnual, debtAnnual = 0) => {
-    let cassa = cap;
-    let runway = null;
-    let burnSum = 0;
-    let burnMonths = 0;
+  calcCashFlow: (cap, revs, vars, fixed, debt = 0) => {
+    let cassa = cap, runway = null, burnSum = 0, burnMonths = 0;
     const flows = [];
-
-    const fixed = (fixedAnnual || 0) / 12;
-    const debt = (debtAnnual || 0) / 12;
-
     for (let m = 0; m < 60; m++) {
       const net = (revs[m] || 0) - ((vars[m] || 0) + fixed + debt);
       cassa += net;
       if (m < 24) flows.push({ mese: m + 1, ca: Math.round(cassa) });
-      if (net < 0) {
-        burnSum += Math.abs(net);
-        burnMonths++;
-      }
+      if (net < 0) { burnSum += Math.abs(net); burnMonths++; }
       if (cassa <= 0 && runway === null) runway = m + 1;
     }
-
     return { f: flows, rw: runway, br: burnMonths > 0 ? Math.round(burnSum / burnMonths) : 0 };
   },
   genProjections: (unitsY1, growth, price, costVar, mult = 1) => {
@@ -446,8 +359,8 @@ const FinancialEngine = {
     }
     return m;
   },
-  calcROI: (u, c) => (c === 0 ? 0 : Math.round((u / c) * 10000) / 100),
-  formatMoney: (v) => {
+  calcROI: (u, c) => c === 0 ? 0 : Math.round((u / c) * 10000) / 100,
+  formatMoney: (v, lang = "it") => {
     if (!Number.isFinite(v)) return "∞";
     const a = Math.abs(v);
     return (
@@ -455,35 +368,29 @@ const FinancialEngine = {
       (a >= 1e6
         ? `€${(a / 1e6).toFixed(1)}M`
         : a >= 1000
-        ? `€${Math.round(a / 1000).toLocaleString()}K`
-        : `€${Math.round(a).toLocaleString()}`)
+        ? `€${formatNumberByLang(Math.round(a / 1000), lang)}K`
+        : `€${formatNumberByLang(Math.round(a), lang)}`)
     );
-  },
+  }
 };
 
-// --- FALLBACKS ---
-
 const Fallbacks = {
-  fin: (t, d, bep, ds, eb, cf, roi, ros, sc) =>
+  fin: (t, d, bep, ds, eb, cf, roi, ros, sc, lang = "it") =>
     `**${d.nomeAzienda} — Financial snapshot (${sc})**
-- **BEP:** ${Number.isFinite(bep.bepUnita) ? bep.bepUnita.toLocaleString() : "∞"} ${t.fallback.units}
-- **EBITDA (Y1):** €${Math.round(eb).toLocaleString()}
+- **BEP:** ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}
+- **EBITDA (Y1):** €${formatCurrencyByLang(eb, lang)}
 - **DSCR:** ${ds.dscr}
-- **Burn:** ${FinancialEngine.formatMoney(cf.br)} /mo
+- **Burn:** ${FinancialEngine.formatMoney(cf.br, lang)} /mo
 - **ROI (Y1):** ${roi}%`,
-  mkt: (t, d) =>
-    `## ${t.marketCard.title}
-- ${t.fallback.competitors}
-- ${t.fallback.swot}
-*(Fallback mode — worker non disponibile)*`,
-  exec: (t, d, bep, ds, eb, cf, roi, ros) =>
+  mkt: (t, d) => `Analisi di mercato per ${d.nomeAzienda} nel settore ${d._sl}.`,
+  exec: (t, d, bep, ds, eb, cf, roi, ros, lang = "it") =>
     `## ${t.execCard.title}
 **${d.nomeAzienda}** — ${d.descrizione}
-- BEP: ${Number.isFinite(bep.bepUnita) ? bep.bepUnita.toLocaleString() : "∞"} ${t.fallback.units}
-- EBITDA Y1: €${Math.round(eb).toLocaleString()}
+- BEP: ${Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞"} ${t.fallback.units}
+- EBITDA Y1: €${formatCurrencyByLang(eb, lang)}
 - DSCR: ${ds.dscr}
 - ROI Y1: ${roi}%
-*(Fallback mode — worker non disponibile)*`,
+*(Fallback mode — worker non disponibile)*`
 };
 
 // --- BASE UI COMPONENTS ---
@@ -583,6 +490,17 @@ const MetricCard = ({ label, value, sub, icon: Icon, isPositive }) => (
   </div>
 );
 
+const SimulationBadge = ({ mode }) => {
+  const t = useTranslation();
+  if (!mode) return null;
+  return (
+    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
+      <span className={`w-1.5 h-1.5 rounded-full ${mode === "live" ? "bg-green-500" : "bg-amber-500"}`} />
+      {mode === "live" ? t.status.live : t.status.sim}
+    </div>
+  );
+};
+
 const AIStatus = ({ finMode, mktMode }) => (
   <div className="bg-slate-900 text-white rounded-lg p-3 shadow-md flex flex-col gap-2">
     <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
@@ -599,59 +517,29 @@ const AIStatus = ({ finMode, mktMode }) => (
   </div>
 );
 
-const SimulationBadge = ({ mode }) => {
-  const t = useTranslation();
-  if (!mode) return null;
-  return (
-    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
-      <span className={`w-1.5 h-1.5 rounded-full ${mode === "live" ? "bg-green-500" : "bg-amber-500"}`} />
-      {mode === "live" ? t.status.live : t.status.sim}
-    </div>
-  );
-};
-
 const MarkdownRenderer = ({ content }) => {
   if (!content) return null;
-  const stringContent = typeof content === "string" ? content : JSON.stringify(content);
+  const stringContent = typeof content === 'string' ? content : JSON.stringify(content);
   const html = stringContent
     .replace(/\*\*(.*?)\*\*/g, `<strong style="color:${COLORS.text};font-weight:700">$1</strong>`)
-    .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(
-      /^### (.*$)/gm,
-      `<h4 style="font-size:13px;font-weight:700;color:${COLORS.primary};margin:16px 0 8px;text-transform:uppercase">$1</h4>`
-    )
-    .replace(
-      /^## (.*$)/gm,
-      `<h3 style="font-size:16px;font-weight:800;color:${COLORS.text};margin:24px 0 12px;border-bottom:1px solid ${COLORS.cardBorder};padding-bottom:6px">$1</h3>`
-    )
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/^### (.*$)/gm, `<h4 style="font-size:13px;font-weight:700;color:${COLORS.primary};margin:16px 0 8px;text-transform:uppercase">$1</h4>`)
+    .replace(/^## (.*$)/gm, `<h3 style="font-size:16px;font-weight:800;color:${COLORS.text};margin:24px 0 12px;border-bottom:1px solid ${COLORS.cardBorder};padding-bottom:6px">$1</h3>`)
     .replace(/^\|(.+)\|$/gm, (m) => {
-      const c = m.split("|").filter((x) => x.trim());
-      if (c.every((x) => /^[\s\-:]+$/.test(x))) return "";
-      return `<tr>${c
-        .map(
-          (x) =>
-            `<td style="padding:10px 12px;border:1px solid ${COLORS.cardBorder};font-size:12px;color:${COLORS.textMuted}">${x.trim()}</td>`
-        )
-        .join("")}</tr>`;
+      const c = m.split("|").filter(x => x.trim());
+      if (c.every(x => /^[\s\-:]+$/.test(x))) return "";
+      return `<tr>${c.map(x => `<td style="padding:10px 12px;border:1px solid ${COLORS.cardBorder};font-size:12px;color:${COLORS.textMuted}">${x.trim()}</td>`).join("")}</tr>`;
     })
-    .replace(
-      /(<tr>.*?<\/tr>\n?)+/gs,
-      (m) =>
-        `<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#F8FAFC;border:1px solid ${COLORS.cardBorder};border-radius:6px;overflow:hidden">${m}</table>`
-    )
-    .replace(
-      /^[\*\-] (.*$)/gm,
-      `<div style="padding:4px 0 4px 20px;position:relative"><span style="position:absolute;left:4px;color:${COLORS.accent};font-weight:bold">•</span>$1</div>`
-    )
+    .replace(/(<tr>.*?<\/tr>\n?)+/gs, m => `<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#F8FAFC;border:1px solid ${COLORS.cardBorder};border-radius:6px;overflow:hidden">${m}</table>`)
+    .replace(/^[\*\-] (.*$)/gm, `<div style="padding:4px 0 4px 20px;position:relative"><span style="position:absolute;left:4px;color:${COLORS.accent};font-weight:bold">•</span>$1</div>`)
     .replace(/\n\n/g, '<div style="height:12px"></div>')
-    .replace(/\n/g, "<br/>");
-
+    .replace(/\n/g, '<br/>');
   return <div className="text-sm leading-relaxed text-slate-600 font-sans" dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 // --- VISUALIZATION COMPONENTS ---
 
-const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
+const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits, lang = "it" }) => {
   const W = 560,
     H = 280;
   const P = { t: 30, r: 30, b: 40, l: 65 };
@@ -664,7 +552,10 @@ const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
 
   const x = (q) => P.l + (q / maxQ) * pW;
   const y = (v) => P.t + pH - (v / maxVal) * pH;
-  const formatK = (v) => (v >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`);
+  const formatK = (v) =>
+    v >= 1e6
+      ? `${formatNumberByLang(v / 1e6, lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`
+      : `${formatNumberByLang(Math.round(v / 1000), lang)}K`;
 
   const bepX = x(safeBepUnits);
   const bepY = y(Number.isFinite(bep.bepFatturato) ? bep.bepFatturato : 0);
@@ -705,7 +596,7 @@ const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
           <g transform={`translate(${bepX - 45}, ${bepY - 35})`}>
             <rect width={90} height={22} rx={4} fill={COLORS.primary} />
             <text x={45} y={15} textAnchor="middle" fill="white" fontWeight="bold">
-              BEP: {bep.bepUnita.toLocaleString()} u.
+              BEP: {formatNumberByLang(bep.bepUnita, lang)} u.
             </text>
           </g>
         </g>
@@ -718,7 +609,7 @@ const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits }) => {
   );
 };
 
-const CashFlowChart = ({ flows }) => {
+const CashFlowChart = ({ flows, lang = "it" }) => {
   if (!flows || !flows.length) return null;
   const W = 560,
     H = 210;
@@ -728,23 +619,62 @@ const CashFlowChart = ({ flows }) => {
 
   const x = (i) => P.l + (i / denom) * (W - P.l - P.r) - 5;
   const yVal = (v) => H - P.b - ((v + maxAbs) / (2 * maxAbs)) * (H - P.t - P.b);
+  const formatCompactMoney = (v) => FinancialEngine.formatMoney(v, lang).replace("€", "");
+
+  const linePath = flows
+    .slice(0, 24)
+    .map((f, i) => `${i === 0 ? "M" : "L"} ${x(i) + 5} ${yVal(isNaN(f.ca) ? 0 : f.ca)}`)
+    .join(" ");
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-full font-sans text-[10px]">
+      <defs>
+        <linearGradient id="cashBars" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#0F172A" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#2563EB" stopOpacity="0.75" />
+        </linearGradient>
+      </defs>
+
+      {[maxAbs, maxAbs / 2, 0, -maxAbs / 2, -maxAbs].map((tick, idx) => (
+        <g key={idx}>
+          <line x1={P.l} y1={yVal(tick)} x2={W - P.r} y2={yVal(tick)} stroke="#E2E8F0" strokeDasharray="3 3" />
+          <text x={P.l - 8} y={yVal(tick) + 3} textAnchor="end" fill={COLORS.textMuted} fontSize="9">
+            {formatCompactMoney(tick)}
+          </text>
+        </g>
+      ))}
+
       <line x1={P.l} y1={yVal(0)} x2={W - P.r} y2={yVal(0)} stroke="#CBD5E1" strokeDasharray="4 4" />
       {flows.slice(0, 24).map((f, i) => {
         const val = isNaN(f.ca) ? 0 : f.ca;
         const barY = val >= 0 ? yVal(val) : yVal(0);
         const h = Math.abs(yVal(val) - yVal(0));
-        return <rect key={i} x={x(i)} y={barY} width={10} height={Math.max(1, h)} fill={val >= 0 ? COLORS.success : COLORS.danger} rx={1} opacity={0.8} />;
+        const showLabel = i % 3 === 0 || i === 23;
+        return (
+          <g key={i}>
+            <rect x={x(i)} y={barY} width={10} height={Math.max(1, h)} fill={val >= 0 ? "url(#cashBars)" : COLORS.danger} rx={2} opacity={0.9} />
+            {showLabel && (
+              <>
+                <text x={x(i) + 5} y={val >= 0 ? barY - 4 : barY + h + 10} textAnchor="middle" fill={COLORS.textMuted} fontSize="8" fontWeight="700">
+                  {formatCompactMoney(val)}
+                </text>
+                <text x={x(i) + 5} y={H - P.b + 12} textAnchor="middle" fill={COLORS.textLight} fontSize="8">
+                  M{f.mese}
+                </text>
+              </>
+            )}
+          </g>
+        );
       })}
+
+      <path d={linePath} stroke={COLORS.primary} strokeWidth={1.5} fill="none" opacity={0.8} />
     </svg>
   );
 };
 
 // --- MULTI-PAGE PDF REPORT ---
 
-const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketContent, execContent, onClose }) => {
+const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marketContent, execContent, financialContent, onClose }) => {
   const years = [0, 1, 2, 3, 4].map((y) => {
     const slice = projections.slice(y * 12, (y + 1) * 12);
     const revenue = slice.reduce((s, m) => s + (m.r || 0), 0);
@@ -784,14 +714,14 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
     <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur overflow-y-auto">
       <div className="sticky top-0 z-50 bg-white p-4 shadow-md print:hidden flex justify-between items-center border-b border-slate-200">
         <div className="font-bold text-slate-900 flex items-center gap-2">
-          <FileText className="text-blue-600" /> Anteprima Report Finale
+          <FileText className="text-blue-600" /> {t.pdf.preview}
         </div>
         <div className="flex gap-3">
           <button onClick={() => window.print()} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-blue-700 transition-all">
-            Stampa / Salva PDF
+            {t.pdf.print}
           </button>
           <button onClick={onClose} className="bg-slate-200 px-6 py-2 rounded-lg font-bold hover:bg-slate-300 transition-all">
-            Esci
+            {t.pdf.close}
           </button>
         </div>
       </div>
@@ -871,12 +801,12 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
 
         <Page pageNumber={7}>
           <h2 className="text-3xl font-bold text-slate-900 mb-10 border-b-2 border-slate-200 pb-4">{t.pdf.ch5}</h2>
-          <h3 className="text-lg font-bold text-slate-700 mb-4 italic">Conto Economico Previsionale (5 Anni)</h3>
+          <h3 className="text-lg font-bold text-slate-700 mb-4 italic">{t.pdf.pnlTitle}</h3>
 
           <table className="w-full text-xs font-mono border-collapse mb-10 border border-slate-200">
             <thead>
               <tr className="bg-slate-900 text-white">
-                <th className="p-3 text-left border border-slate-800">Voce</th>
+                <th className="p-3 text-left border border-slate-800">{t.table.item}</th>
                 {years.map((_, i) => (
                   <th key={i} className="p-3 text-right border border-slate-800">
                     Y{i + 1}
@@ -886,23 +816,23 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
             </thead>
             <tbody>
               {[
-                { label: "Ricavi", key: "revenue" },
-                { label: "Costi Variabili", key: "varCosts" },
-                { label: "Margine Contr.", key: "mc" },
-                { label: "Costi Fissi", key: "fixed" },
-                { label: "EBITDA", key: "ebitda" },
+                { label: t.table.rows[0], key: "revenue" },
+                { label: t.table.rows[1], key: "varCosts" },
+                { label: t.table.rows[2], key: "mc" },
+                { label: t.table.rows[3], key: "fixed" },
+                { label: t.table.rows[4], key: "ebitda" },
               ].map((row) => (
                 <tr key={row.key} className={row.key === "ebitda" ? "bg-slate-50 font-bold" : ""}>
                   <td className="p-3 border border-slate-200 font-sans">{row.label}</td>
                   {years.map((y, i) => (
                     <td key={i} className="p-3 text-right border border-slate-200 italic">
-                      €{Math.round(y[row.key]).toLocaleString()}
+                      €{formatCurrencyByLang(y[row.key], lang)}
                     </td>
                   ))}
                 </tr>
               ))}
               <tr className="bg-blue-50 font-bold">
-                <td className="p-3 border border-slate-200 font-sans">EBITDA Margin</td>
+                <td className="p-3 border border-slate-200 font-sans">{t.table.ebitdaMargin}</td>
                 {years.map((y, i) => (
                   <td key={i} className="p-3 text-right border border-slate-200 font-mono">
                     {(y.margin * 100).toFixed(1)}%
@@ -912,25 +842,34 @@ const BusinessPlanReport = ({ data, t, bep, projections, cf, ds, eb, marketConte
             </tbody>
           </table>
 
+          <div className="mb-8">
+            <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.financeAiTitle}</h4>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <MarkdownRenderer content={financialContent || t.fallback.fin} />
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-8">
             <Card className="bg-slate-50">
-              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Break Even Analysis</h4>
+              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.breakEvenTitle}</h4>
               <p className="text-[10px] text-slate-500 mb-4 font-bold">
-                Pareggio a {Number.isFinite(bep.bepUnita) ? bep.bepUnita.toLocaleString() : "∞"} unità (Mese {bepMonth || "N/D"}).
+                {t.pdf.breakEvenText
+                  .replace("{units}", Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞")
+                  .replace("{month}", bepMonth || "N/A")}
               </p>
-              <BreakEvenChart bep={bep} pv={data.prezzoVendita} cv={data.costoVariabile} cf={data.costiFissi} />
+              <BreakEvenChart bep={bep} pv={data.prezzoVendita} cv={data.costoVariabile} cf={data.costiFissi} lang={lang} />
             </Card>
 
             <Card className="bg-slate-50">
-              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">Bancabilità & Liquidità</h4>
+              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.creditTitle}</h4>
               <div className="space-y-3 pt-2">
                 <div className="flex justify-between items-center text-xs">
                   <span>DSCR Index</span>
                   <span className="font-black text-blue-600 text-lg">{String(ds.dscr)}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span>Fabbisogno Massimo</span>
-                  <span className="font-black text-red-600 text-lg">€{Math.round(fabbisogno).toLocaleString()}</span>
+                  <span>{t.pdf.maxNeed}</span>
+                  <span className="font-black text-red-600 text-lg">€{formatCurrencyByLang(fabbisogno, lang)}</span>
                 </div>
               </div>
             </Card>
@@ -1029,6 +968,7 @@ const StepCompany = ({ data, updateData }) => {
 const StepTeam = ({ data, updateData }) => {
   const t = useTranslation();
   const [name, setName] = useState("");
+  const [role, setRole] = useState("");
   const [bio, setBio] = useState("");
   const [isAn, setIsAn] = useState(false);
 
@@ -1036,8 +976,9 @@ const StepTeam = ({ data, updateData }) => {
     if (!name) return;
     setIsAn(true);
     setTimeout(() => {
-      updateData("team", [...data.team, { name, role: "Key Member", superpower: bio || "Expert" }]);
+      updateData("team", [...data.team, { name, role: role || "Key Member", superpower: bio || "Expert" }]);
       setName("");
+      setRole("");
       setBio("");
       setIsAn(false);
     }, 450);
@@ -1052,7 +993,9 @@ const StepTeam = ({ data, updateData }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="md:col-span-1 border-t-4 border-blue-600">
-          <InputField label="Nome & Cognome" value={name} onChange={setName} />
+          <InputField label={t.sTeam.nameLabel} value={name} onChange={setName} />
+          <div className="mt-4" />
+          <InputField label={t.sTeam.roleLabel} value={role} onChange={setRole} />
           <div className="mt-4" />
           <InputField label={t.sTeam.bioLabel} value={bio} onChange={setBio} hint={t.sTeam.bioHint} />
           <button
@@ -1135,6 +1078,7 @@ const StepEconomics = ({ data, updateData }) => {
 
 const Dashboard = ({ data }) => {
   const t = useTranslation();
+  const lang = useLanguage();
   const sectors = useSectors();
   const [si, setSi] = useState(1);
   const [tab, setTab] = useState("financial");
@@ -1180,9 +1124,9 @@ const Dashboard = ({ data }) => {
   const fFin = useCallback(async () => {
     setCom((p) => ({ ...p, loading: true }));
     const res = await callWorker(WORKER_URLS.fin, t.prompts.fin(dE, bep, ds, eb, cf, roi, 0, sc.label));
-    const content = res.ok ? res.content : Fallbacks.fin(t, dE, bep, ds, eb, cf, roi, 0, sc.label);
+    const content = res.ok ? res.content : Fallbacks.fin(t, dE, bep, ds, eb, cf, roi, 0, sc.label, lang);
     setCom({ content, loading: false, mode: res.ok ? "live" : "fallback" });
-  }, [t, dE, bep, ds, eb, cf, roi, sc.label]);
+  }, [t, dE, bep, ds, eb, cf, roi, sc.label, lang]);
 
   const fMkt = useCallback(async () => {
     setMkt((p) => ({ ...p, loading: true }));
@@ -1197,11 +1141,11 @@ const Dashboard = ({ data }) => {
       setExec((p) => ({ ...p, loading: true }));
       const market = marketOverride ?? mkt.content;
       const res = await callWorker(WORKER_URLS.exec, t.prompts.exec(dE, bep, ds, eb, proj?.[0]?.r ?? 0, cf, roi, 0, market));
-      const content = res.ok ? res.content : Fallbacks.exec(t, dE, bep, ds, eb, cf, roi, 0);
+      const content = res.ok ? res.content : Fallbacks.exec(t, dE, bep, ds, eb, cf, roi, 0, lang);
       setExec({ content, loading: false, mode: res.ok ? "live" : "fallback" });
       return content;
     },
-    [t, dE, bep, ds, eb, proj, cf, roi, mkt.content]
+    [t, dE, bep, ds, eb, proj, cf, roi, mkt.content, lang]
   );
 
   useEffect(() => {
@@ -1223,6 +1167,7 @@ const Dashboard = ({ data }) => {
         <BusinessPlanReport
           data={dE}
           t={t}
+          lang={lang}
           bep={bep}
           projections={proj}
           cf={cf}
@@ -1230,6 +1175,7 @@ const Dashboard = ({ data }) => {
           eb={eb}
           marketContent={mkt.content}
           execContent={exec.content}
+          financialContent={com.content}
           onClose={() => setShowPdf(false)}
         />
       )}
@@ -1270,12 +1216,12 @@ const Dashboard = ({ data }) => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <MetricCard
           label={t.dashboard.bep}
-          value={Number.isFinite(bep.bepUnita) ? `${bep.bepUnita.toLocaleString()} u.` : "∞"}
-          sub={`Fatt: ${FinancialEngine.formatMoney(bep.bepFatturato)}`}
+          value={Number.isFinite(bep.bepUnita) ? `${formatNumberByLang(bep.bepUnita, lang)} u.` : "∞"}
+          sub={`Fatt: ${FinancialEngine.formatMoney(bep.bepFatturato, lang)}`}
           icon={AlertCircle}
         />
         <MetricCard label={t.dashboard.margin} value={`${bep.mcPerc}%`} sub={`€${bep.margin}/u`} icon={PieChart} />
-        <MetricCard label={t.dashboard.burn} value={FinancialEngine.formatMoney(cf.br)} sub={cf.rw ? `Runway: ${cf.rw}mo` : "Runway: ∞"} icon={Wallet} />
+        <MetricCard label={t.dashboard.burn} value={FinancialEngine.formatMoney(cf.br, lang)} sub={cf.rw ? `Runway: ${cf.rw}mo` : "Runway: ∞"} icon={Wallet} />
         <MetricCard label="ROI Y1" value={`${roi}%`} icon={TrendingUp} />
       </div>
 
@@ -1298,7 +1244,14 @@ const Dashboard = ({ data }) => {
               <h3 className="text-sm font-bold text-slate-700">{t.bepCard.title}</h3>
               <Badge color={COLORS.accent}>Enterprise Model</Badge>
             </div>
-            <BreakEvenChart bep={bep} pv={data.prezzoVendita} cv={data.costoVariabile} cf={data.costiFissi} projectedUnits={Math.round(data.unitaAnno1 * sc.mult)} />
+            <BreakEvenChart
+              bep={bep}
+              pv={data.prezzoVendita}
+              cv={data.costoVariabile}
+              cf={data.costiFissi}
+              projectedUnits={Math.round(data.unitaAnno1 * sc.mult)}
+              lang={lang}
+            />
           </Card>
 
           <Card className="bg-slate-900 text-white border-none shadow-xl h-full">
@@ -1309,8 +1262,8 @@ const Dashboard = ({ data }) => {
           </Card>
 
           <Card className="lg:col-span-3 bg-slate-50/50">
-            <h3 className="text-sm font-bold mb-4 text-slate-800 uppercase tracking-wider">Previsione Cassa (24 mesi)</h3>
-            <CashFlowChart flows={cf.f} />
+            <h3 className="text-sm font-bold mb-4 text-slate-800 uppercase tracking-wider">{t.pdf.cashFlowTitle}</h3>
+            <CashFlowChart flows={cf.f} lang={lang} />
           </Card>
         </div>
       )}
