@@ -8,30 +8,30 @@ import {
   UserPlus, Trash2
 } from "lucide-react";
 
-// --- CONFIGURAZIONE E COSTANTI ---
+// --- CONFIGURAZIONE E COSTANTI (BLACK SWAN THEME) ---
 
 const COLORS = {
-  bg: "#F8FAFC",          
-  surface: "#FFFFFF",     
-  input: "#FFFFFF",       
-  inputBorder: "#E2E8F0", 
-  cardBorder: "#E2E8F0",  
-  text: "#0F172A",        
-  textMuted: "#64748B",   
-  textLight: "#94A3B8",   
-  primary: "#0F172A",     
-  accent: "#2563EB",      
-  accentSoft: "#EFF6FF",  
-  success: "#16A34A",     
-  successBg: "#DCFCE7",   
-  danger: "#DC2626",      
-  dangerBg: "#FEE2E2",    
-  warning: "#D97706",     
-  warningBg: "#FEF3C7",   
-  purple: "#7C3AED",      
-  purpleBg: "#F3E8FF",    
-  cyan: "#0891B2",        
-  cyanBg: "#ECFEFF",      
+  bg: "#0A0A0A",          
+  surface: "#171717",     
+  input: "#0A0A0A",       
+  inputBorder: "#404040", 
+  cardBorder: "#262626",  
+  text: "#F5F5F5",        
+  textMuted: "#A3A3A3",   
+  textLight: "#D4D4D4",   
+  primary: "#D4AF37",     // Gold
+  accent: "#D4AF37",      // Gold
+  accentSoft: "rgba(212, 175, 55, 0.15)",  
+  success: "#10B981",     
+  successBg: "rgba(16, 185, 129, 0.15)",   
+  danger: "#EF4444",      
+  dangerBg: "rgba(239, 68, 68, 0.15)",    
+  warning: "#F59E0B",     
+  warningBg: "rgba(245, 158, 11, 0.15)",   
+  purple: "#8B5CF6",      
+  purpleBg: "rgba(139, 92, 246, 0.15)",    
+  cyan: "#06B6D4",        
+  cyanBg: "rgba(6, 182, 212, 0.15)",      
 };
 
 const LEGAL_DISCLAIMER = "DISCLAIMER LEGALE: Le presenti proiezioni finanziarie si basano su stime e ipotesi fornite dall'utente e rielaborate da algoritmi di intelligenza artificiale. I risultati passati o previsti non costituiscono garanzia di performance future. Il documento è generato a scopo di pianificazione interna e non sostituisce la consulenza professionale certificata.";
@@ -168,7 +168,6 @@ const i18n = {
     hints: { saas: "Cloud architecture", ecom: "Logistica store", risto: "Food operations", cons: "Human capital", manif: "Asset industriali", health: "Certificazioni" }
   },
   
-  // EN COMPLETO
   en: {
     steps: ["Company", "Team", "Economics", "Dashboard"],
     nav: ["Back", "Next", "Generate Dashboard"],
@@ -398,36 +397,36 @@ const Fallbacks = {
 const LoadingPulse = ({ text }) => (
   <div className="flex items-center gap-3 py-4 pl-1">
     <div className="relative flex h-3 w-3">
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-      <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500" />
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
+      <span className="relative inline-flex rounded-full h-3 w-3 bg-[#D4AF37]" />
     </div>
-    <span className="text-xs font-medium text-slate-500">{text}</span>
+    <span className="text-xs font-medium text-[#A3A3A3]">{text}</span>
   </div>
 );
 
 const InputField = ({ label, value, onChange, suffix, type = "text", hint }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{label}</label>
+    <label className="text-[10px] font-bold text-[#A3A3A3] uppercase tracking-widest">{label}</label>
     <div className="relative">
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(type === "number" ? parseFloat(e.target.value) || 0 : e.target.value)}
-        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-shadow"
+        className="w-full px-3 py-2 bg-[#0A0A0A] border border-[#404040] text-[#F5F5F5] rounded-md text-sm focus:ring-1 focus:ring-[#D4AF37] focus:border-[#D4AF37] outline-none transition-shadow"
       />
-      {suffix && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">{suffix}</span>}
+      {suffix && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A3A3] text-xs">{suffix}</span>}
     </div>
-    {hint && <span className="text-[9px] text-slate-400 italic">{hint}</span>}
+    {hint && <span className="text-[9px] text-[#A3A3A3] italic">{hint}</span>}
   </div>
 );
 
 const SelectField = ({ label, value, onChange, options }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{label}</label>
+    <label className="text-[10px] font-bold text-[#A3A3A3] uppercase tracking-widest">{label}</label>
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm outline-none appearance-none cursor-pointer"
+      className="w-full px-3 py-2 bg-[#0A0A0A] border border-[#404040] text-[#F5F5F5] rounded-md text-sm outline-none appearance-none cursor-pointer focus:ring-1 focus:ring-[#D4AF37]"
     >
       {options.map((o) => (
         <option key={o.value} value={o.value}>
@@ -439,7 +438,7 @@ const SelectField = ({ label, value, onChange, options }) => (
 );
 
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white border border-slate-200 rounded-xl shadow-sm p-6 ${className}`}>{children}</div>
+  <div className={`bg-[#171717] border border-[#262626] rounded-xl shadow-md p-6 ${className}`}>{children}</div>
 );
 
 const Badge = ({ children, color = COLORS.accent }) => {
@@ -462,28 +461,28 @@ const Badge = ({ children, color = COLORS.accent }) => {
 };
 
 const MetricCard = ({ label, value, sub, icon: Icon, isPositive }) => (
-  <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between shadow-sm h-full hover:shadow-md transition-all">
+  <div className="bg-[#171717] border border-[#262626] rounded-xl p-5 flex flex-col justify-between shadow-md h-full hover:shadow-lg hover:border-[#404040] transition-all">
     <div>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-bold text-[#A3A3A3] uppercase tracking-wider">{label}</span>
         {Icon && (
           <div
             className={`p-1.5 rounded-md ${
               isPositive === true
-                ? "bg-green-50 text-green-600"
+                ? "bg-green-900 text-green-400"
                 : isPositive === false
-                ? "bg-red-50 text-red-600"
-                : "bg-slate-50 text-slate-500"
+                ? "bg-red-900 text-red-400"
+                : "bg-[#262626] text-[#D4AF37]"
             }`}
           >
             <Icon size={14} />
           </div>
         )}
       </div>
-      <div className="text-2xl font-bold text-slate-900 font-mono tracking-tight">{String(value)}</div>
+      <div className="text-2xl font-bold text-[#F5F5F5] font-mono tracking-tight">{String(value)}</div>
     </div>
     {sub && (
-      <div className="mt-3 pt-3 border-t border-slate-100 text-[10px] font-medium text-slate-500 uppercase">
+      <div className="mt-3 pt-3 border-t border-[#262626] text-[10px] font-medium text-[#A3A3A3] uppercase">
         {String(sub)}
       </div>
     )}
@@ -491,17 +490,17 @@ const MetricCard = ({ label, value, sub, icon: Icon, isPositive }) => (
 );
 
 const AIStatus = ({ finMode, mktMode }) => (
-  <div className="bg-slate-900 text-white rounded-lg p-3 shadow-md flex flex-col gap-2">
-    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+  <div className="bg-[#D4AF37] text-[#0A0A0A] rounded-lg p-3 shadow-md flex flex-col gap-2">
+    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider mb-1">
       <Server size={10} /> AI Worker Status
     </div>
-    <div className="flex items-center justify-between text-[10px]">
+    <div className="flex items-center justify-between text-[10px] font-bold">
       <span>Finanza</span>
-      <span className={finMode === "live" ? "text-green-400" : "text-slate-500"}>{finMode === "live" ? "LIVE" : "IDLE"}</span>
+      <span className={finMode === "live" ? "text-green-900" : "text-[#0A0A0A]/60"}>{finMode === "live" ? "LIVE" : "IDLE"}</span>
     </div>
-    <div className="flex items-center justify-between text-[10px]">
+    <div className="flex items-center justify-between text-[10px] font-bold">
       <span>Mercato</span>
-      <span className={mktMode === "live" ? "text-green-400" : "text-slate-500"}>{mktMode === "live" ? "LIVE" : "IDLE"}</span>
+      <span className={mktMode === "live" ? "text-green-900" : "text-[#0A0A0A]/60"}>{mktMode === "live" ? "LIVE" : "IDLE"}</span>
     </div>
   </div>
 );
@@ -510,7 +509,7 @@ const SimulationBadge = ({ mode }) => {
   const t = useTranslation();
   if (!mode) return null;
   return (
-    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
+    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#262626] text-[#A3A3A3] border border-[#404040]">
       <span className={`w-1.5 h-1.5 rounded-full ${mode === "live" ? "bg-green-500" : "bg-amber-500"}`} />
       {mode === "live" ? t.status.live : t.status.sim}
     </div>
@@ -521,7 +520,7 @@ const MarkdownRenderer = ({ content }) => {
   if (!content) return null;
   const stringContent = typeof content === "string" ? content : JSON.stringify(content);
   const html = stringContent
-    .replace(/\*\*(.*?)\*\*/g, `<strong style="color:${COLORS.text};font-weight:700">$1</strong>`)
+    .replace(/\*\*(.*?)\*\*/g, `<strong style="color:${COLORS.primary};font-weight:700">$1</strong>`)
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
     .replace(
       /^### (.*$)/gm,
@@ -544,7 +543,7 @@ const MarkdownRenderer = ({ content }) => {
     .replace(
       /(<tr>.*?<\/tr>\n?)+/gs,
       (m) =>
-        `<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#F8FAFC;border:1px solid ${COLORS.cardBorder};border-radius:6px;overflow:hidden">${m}</table>`
+        `<table style="width:100%;border-collapse:collapse;margin:12px 0;background:#0A0A0A;border:1px solid ${COLORS.cardBorder};border-radius:6px;overflow:hidden">${m}</table>`
     )
     .replace(
       /^[\*\-] (.*$)/gm,
@@ -553,7 +552,7 @@ const MarkdownRenderer = ({ content }) => {
     .replace(/\n\n/g, '<div style="height:12px"></div>')
     .replace(/\n/g, "<br/>");
 
-  return <div className="text-sm leading-relaxed text-slate-600 font-sans" dangerouslySetInnerHTML={{ __html: html }} />;
+  return <div className="text-sm leading-relaxed text-[#D4D4D4] font-sans" dangerouslySetInnerHTML={{ __html: html }} />;
 };
 
 // --- VISUALIZATION COMPONENTS ---
@@ -611,10 +610,10 @@ const BreakEvenChart = ({ bep, pv, cv, cf, projectedUnits, lang = "it" }) => {
       {!bep.errore && Number.isFinite(bep.bepUnita) && bep.bepUnita !== 0 && (
         <g>
           <line x1={bepX} y1={y(0)} x2={bepX} y2={bepY} stroke={COLORS.textMuted} strokeDasharray="2 2" />
-          <circle cx={bepX} cy={bepY} r={6} fill="white" stroke={COLORS.primary} strokeWidth={2} />
+          <circle cx={bepX} cy={bepY} r={6} fill={COLORS.surface} stroke={COLORS.primary} strokeWidth={2} />
           <g transform={`translate(${bepX - 45}, ${bepY - 35})`}>
             <rect width={90} height={22} rx={4} fill={COLORS.primary} />
-            <text x={45} y={15} textAnchor="middle" fill="white" fontWeight="bold">
+            <text x={45} y={15} textAnchor="middle" fill="#0A0A0A" fontWeight="bold">
               BEP: {formatNumberByLang(bep.bepUnita, lang)} u.
             </text>
           </g>
@@ -649,21 +648,21 @@ const CashFlowChart = ({ flows, lang = "it" }) => {
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-full font-sans text-[10px]">
       <defs>
         <linearGradient id="cashBars" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0F172A" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#2563EB" stopOpacity="0.75" />
+          <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#B49020" stopOpacity="0.75" />
         </linearGradient>
       </defs>
 
       {[maxAbs, maxAbs / 2, 0, -maxAbs / 2, -maxAbs].map((tick, idx) => (
         <g key={idx}>
-          <line x1={P.l} y1={yVal(tick)} x2={W - P.r} y2={yVal(tick)} stroke="#E2E8F0" strokeDasharray="3 3" />
+          <line x1={P.l} y1={yVal(tick)} x2={W - P.r} y2={yVal(tick)} stroke={COLORS.cardBorder} strokeDasharray="3 3" />
           <text x={P.l - 8} y={yVal(tick) + 3} textAnchor="end" fill={COLORS.textMuted} fontSize="9">
             {formatCompactMoney(tick)}
           </text>
         </g>
       ))}
 
-      <line x1={P.l} y1={yVal(0)} x2={W - P.r} y2={yVal(0)} stroke="#CBD5E1" strokeDasharray="4 4" />
+      <line x1={P.l} y1={yVal(0)} x2={W - P.r} y2={yVal(0)} stroke="#525252" strokeDasharray="4 4" />
       {flows.slice(0, 24).map((f, i) => {
         const val = isNaN(f.ca) ? 0 : f.ca;
         const barY = val >= 0 ? yVal(val) : yVal(0);
@@ -686,7 +685,7 @@ const CashFlowChart = ({ flows, lang = "it" }) => {
         );
       })}
 
-      <path d={linePath} stroke={COLORS.primary} strokeWidth={1.5} fill="none" opacity={0.8} />
+      <path d={linePath} stroke={COLORS.textMuted} strokeWidth={1.5} fill="none" opacity={0.5} />
     </svg>
   );
 };
@@ -719,34 +718,39 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
   const fabbisogno = minCash < 0 ? Math.abs(minCash) : 0;
 
   const Page = ({ children, pageNumber }) => (
-    <div className="w-[210mm] min-h-[297mm] bg-white mx-auto p-[20mm] relative shadow-lg mb-8 print:w-[210mm] print:h-[297mm] print:shadow-none print:m-0 print:break-after-page flex flex-col font-sans overflow-hidden">
+    <div className="w-[210mm] min-h-[297mm] bg-[#0A0A0A] text-[#F5F5F5] mx-auto p-[20mm] relative shadow-2xl mb-8 print:w-[210mm] print:h-[297mm] print:shadow-none print:m-0 print:break-after-page flex flex-col font-sans overflow-hidden border border-[#262626] print:border-none">
       <div className="flex-1">{children}</div>
-      <div className="mt-auto pt-4 border-t border-slate-200 flex justify-between text-[10px] text-slate-400">
-        <span className="font-bold">{data.nomeAzienda} — Confidential Business Plan</span>
+      <div className="mt-auto pt-4 border-t border-[#404040] flex justify-between text-[10px] text-[#A3A3A3]">
+        <span className="font-bold text-[#D4AF37]">{data.nomeAzienda} — The Black Swan Playbook</span>
         <span>Page {pageNumber}</span>
       </div>
-      <div className="text-center text-[7px] text-slate-300 italic mt-3 uppercase tracking-tighter">{LEGAL_DISCLAIMER}</div>
+      <div className="text-center text-[7px] text-[#525252] italic mt-3 uppercase tracking-tighter">{LEGAL_DISCLAIMER}</div>
     </div>
   );
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur overflow-y-auto print:static print:inset-auto print:w-full print:h-auto print:overflow-visible print:bg-white print:p-0 print:m-0">
+    <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur overflow-y-auto print:static print:inset-auto print:w-full print:h-auto print:overflow-visible print:bg-[#0A0A0A] print:p-0 print:m-0">
       <style>{`
         @media print {
           @page { size: A4; margin: 0; }
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white; }
+          body { 
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important; 
+            background: #0A0A0A !important; 
+            color: #F5F5F5 !important; 
+          }
         }
       `}</style>
       
-      <div className="sticky top-0 z-50 bg-white p-4 shadow-md print:hidden flex justify-between items-center border-b border-slate-200">
-        <div className="font-bold text-slate-900 flex items-center gap-2">
-          <FileText className="text-blue-600" /> {t.pdf.preview}
+      <div className="sticky top-0 z-50 bg-[#171717] p-4 shadow-md print:hidden flex justify-between items-center border-b border-[#262626]">
+        <div className="font-bold text-[#D4AF37] flex items-center gap-2">
+          <FileText className="text-[#D4AF37]" /> {t.pdf.preview}
         </div>
         <div className="flex gap-3">
-          <button onClick={() => window.print()} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-blue-700 transition-all">
+          <button onClick={() => window.print()} className="bg-[#D4AF37] text-black px-6 py-2 rounded-lg font-bold shadow-md hover:bg-[#B49020] transition-all">
             {t.pdf.print}
           </button>
-          <button onClick={onClose} className="bg-slate-200 px-6 py-2 rounded-lg font-bold hover:bg-slate-300 transition-all">
+          <button onClick={onClose} className="bg-[#262626] text-[#F5F5F5] px-6 py-2 rounded-lg font-bold hover:bg-[#404040] transition-all">
             {t.pdf.close}
           </button>
         </div>
@@ -755,16 +759,16 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
       <div className="py-10 print:py-0 print:m-0">
         <Page pageNumber={1}>
           <div className="h-full flex flex-col justify-center items-center text-center">
-            <div className="w-40 h-40 bg-slate-900 rounded-[2.5rem] flex items-center justify-center text-white text-7xl font-black mb-12 shadow-2xl">
-              G
+            <div className="w-40 h-40 bg-[#D4AF37] rounded-[2.5rem] flex items-center justify-center text-[#0A0A0A] text-7xl font-black mb-12 shadow-[0_0_50px_rgba(212,175,55,0.3)]">
+              BS
             </div>
-            <h1 className="text-6xl font-serif font-black text-slate-900 mb-4 uppercase tracking-tighter">{data.nomeAzienda}</h1>
-            <p className="text-2xl text-slate-500 mb-20 font-light">Business Plan & Financial Projections 2026-2030</p>
-            <div className="border-t-2 border-b-2 border-slate-900 py-10 w-full max-w-lg">
-              <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 tracking-[0.2em]">Prepared for</div>
-              <div className="text-2xl font-bold text-slate-800">CEO / Founders / Investors</div>
-              <div className="flex justify-around mt-10 text-[11px] font-bold text-slate-500 uppercase">
-                <div>Date: 16/02/2026</div>
+            <h1 className="text-6xl font-serif font-black text-[#D4AF37] mb-4 uppercase tracking-tighter">{data.nomeAzienda}</h1>
+            <p className="text-2xl text-[#A3A3A3] mb-20 font-light tracking-wide">The Black Swan CFO Playbook</p>
+            <div className="border-t-2 border-b-2 border-[#D4AF37] py-10 w-full max-w-lg">
+              <div className="text-xs font-black text-[#A3A3A3] uppercase tracking-[0.2em] mb-4">Prepared for</div>
+              <div className="text-2xl font-bold text-[#F5F5F5]">Executive Board</div>
+              <div className="flex justify-around mt-10 text-[11px] font-bold text-[#D4AF37] uppercase">
+                <div>Date: {new Date().toLocaleDateString(getLocale(lang))}</div>
                 <div>Version: 1.0</div>
               </div>
             </div>
@@ -772,13 +776,13 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
         </Page>
 
         <Page pageNumber={2}>
-          <h2 className="text-3xl font-black text-slate-900 mb-16 border-b-8 border-slate-900 pb-4 inline-block">{t.pdf.index}</h2>
+          <h2 className="text-3xl font-black text-[#D4AF37] mb-16 border-b-4 border-[#D4AF37] pb-4 inline-block">{t.pdf.index}</h2>
           <div className="space-y-8 max-w-2xl">
             {[{ t: t.pdf.ch1, p: 3 }, { t: t.pdf.ch2, p: 4 }, { t: t.pdf.ch3, p: 5 }, { t: t.pdf.ch4, p: 6 }, { t: t.pdf.ch5, p: 7 }].map(
               (item, i) => (
-                <div key={i} className="flex justify-between items-baseline border-b border-slate-100 pb-2">
-                  <span className="text-xl font-bold text-slate-700">{item.t}</span>
-                  <span className="font-mono text-slate-400 font-bold">pg. {item.p}</span>
+                <div key={i} className="flex justify-between items-baseline border-b border-[#262626] pb-2">
+                  <span className="text-xl font-bold text-[#D4D4D4]">{item.t}</span>
+                  <span className="font-mono text-[#D4AF37] font-bold">pg. {item.p}</span>
                 </div>
               )
             )}
@@ -786,22 +790,22 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
         </Page>
 
         <Page pageNumber={3}>
-          <h2 className="text-3xl font-bold text-slate-900 mb-10 border-b-2 border-slate-200 pb-4">{t.pdf.ch1}</h2>
+          <h2 className="text-3xl font-bold text-[#D4AF37] mb-10 border-b border-[#404040] pb-4">{t.pdf.ch1}</h2>
           <MarkdownRenderer content={execContent || t.execCard.readySub} />
         </Page>
 
         <Page pageNumber={4}>
-          <h2 className="text-3xl font-bold text-slate-900 mb-10 border-b-2 border-slate-200 pb-4">{t.pdf.ch2}</h2>
+          <h2 className="text-3xl font-bold text-[#D4AF37] mb-10 border-b border-[#404040] pb-4">{t.pdf.ch2}</h2>
           <div className="grid grid-cols-1 gap-8">
             {data.team.map((m, i) => (
-              <div key={i} className="flex gap-6 items-start border-b border-slate-100 pb-8 last:border-0">
-                <div className="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 text-3xl">
+              <div key={i} className="flex gap-6 items-start border-b border-[#262626] pb-8 last:border-0">
+                <div className="w-20 h-20 bg-[#171717] border border-[#404040] rounded-2xl flex items-center justify-center font-black text-[#D4AF37] text-3xl shadow-lg">
                   {m.name?.charAt(0) || "?"}
                 </div>
                 <div className="flex-1">
-                  <div className="font-black text-2xl text-slate-900">{m.name}</div>
-                  <div className="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3">{m.role}</div>
-                  <p className="text-slate-600 leading-relaxed italic">"{m.superpower}"</p>
+                  <div className="font-black text-2xl text-[#F5F5F5]">{m.name}</div>
+                  <div className="text-[#D4AF37] font-bold uppercase tracking-widest text-sm mb-3">{m.role}</div>
+                  <p className="text-[#A3A3A3] leading-relaxed italic">"{m.superpower}"</p>
                 </div>
               </div>
             ))}
@@ -809,32 +813,32 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
         </Page>
 
         <Page pageNumber={5}>
-          <h2 className="text-3xl font-bold text-slate-900 mb-10 border-b-2 border-slate-200 pb-4">{t.pdf.ch3}</h2>
+          <h2 className="text-3xl font-bold text-[#D4AF37] mb-10 border-b border-[#404040] pb-4">{t.pdf.ch3}</h2>
           <MarkdownRenderer content={marketContent} />
         </Page>
 
         <Page pageNumber={6}>
-          <h2 className="text-3xl font-bold text-slate-900 mb-10 border-b-2 border-slate-200 pb-4">{t.pdf.ch4}</h2>
+          <h2 className="text-3xl font-bold text-[#D4AF37] mb-10 border-b border-[#404040] pb-4">{t.pdf.ch4}</h2>
           <div className="grid grid-cols-1 gap-6">
             {Object.entries(data.marketingMix || {}).map(([k, v]) => (
-              <div key={k} className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                <div className="text-[10px] font-bold text-slate-400 uppercase">{k}</div>
-                <div className="text-slate-800 font-bold">{v}</div>
+              <div key={k} className="p-4 bg-[#171717] rounded-lg border border-[#404040]">
+                <div className="text-[10px] font-bold text-[#D4AF37] uppercase mb-1">{k}</div>
+                <div className="text-[#F5F5F5] font-bold">{v}</div>
               </div>
             ))}
           </div>
         </Page>
 
         <Page pageNumber={7}>
-          <h2 className="text-3xl font-bold text-slate-900 mb-10 border-b-2 border-slate-200 pb-4">{t.pdf.ch5}</h2>
-          <h3 className="text-lg font-bold text-slate-700 mb-4 italic">{t.pdf.pnlTitle}</h3>
+          <h2 className="text-3xl font-bold text-[#D4AF37] mb-10 border-b border-[#404040] pb-4">{t.pdf.ch5}</h2>
+          <h3 className="text-lg font-bold text-[#F5F5F5] mb-4 italic">{t.pdf.pnlTitle}</h3>
 
-          <table className="w-full text-xs font-mono border-collapse mb-10 border border-slate-200">
+          <table className="w-full text-xs font-mono border-collapse mb-10 border border-[#404040]">
             <thead>
-              <tr className="bg-slate-900 text-white">
-                <th className="p-3 text-left border border-slate-800">{t.table.item}</th>
+              <tr className="bg-[#D4AF37] text-[#0A0A0A]">
+                <th className="p-3 text-left border border-[#404040]">{t.table.item}</th>
                 {years.map((_, i) => (
-                  <th key={i} className="p-3 text-right border border-slate-800">
+                  <th key={i} className="p-3 text-right border border-[#404040]">
                     Y{i + 1}
                   </th>
                 ))}
@@ -848,19 +852,19 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
                 { label: t.table.rows[3], key: "fixed" },
                 { label: t.table.rows[4], key: "ebitda" },
               ].map((row) => (
-                <tr key={row.key} className={row.key === "ebitda" ? "bg-slate-50 font-bold" : ""}>
-                  <td className="p-3 border border-slate-200 font-sans">{row.label}</td>
+                <tr key={row.key} className={row.key === "ebitda" ? "bg-[#171717] font-bold" : ""}>
+                  <td className="p-3 border border-[#404040] font-sans text-[#D4D4D4]">{row.label}</td>
                   {years.map((y, i) => (
-                    <td key={i} className="p-3 text-right border border-slate-200 italic">
+                    <td key={i} className="p-3 text-right border border-[#404040] italic text-[#A3A3A3]">
                       €{formatCurrencyByLang(y[row.key], lang)}
                     </td>
                   ))}
                 </tr>
               ))}
-              <tr className="bg-blue-50 font-bold">
-                <td className="p-3 border border-slate-200 font-sans">{t.table.ebitdaMargin}</td>
+              <tr className="bg-[#D4AF37]/20 font-bold">
+                <td className="p-3 border border-[#404040] font-sans text-[#D4AF37]">{t.table.ebitdaMargin}</td>
                 {years.map((y, i) => (
-                  <td key={i} className="p-3 text-right border border-slate-200 font-mono">
+                  <td key={i} className="p-3 text-right border border-[#404040] font-mono text-[#D4AF37]">
                     {(y.margin * 100).toFixed(1)}%
                   </td>
                 ))}
@@ -869,16 +873,16 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
           </table>
 
           <div className="mb-8">
-            <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.financeAiTitle}</h4>
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <h4 className="font-bold text-[#D4AF37] mb-2 uppercase text-xs tracking-wider">{t.pdf.financeAiTitle}</h4>
+            <div className="bg-[#171717] border border-[#404040] rounded-lg p-4">
               <MarkdownRenderer content={financialContent || t.fallback.fin} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-8">
-            <Card className="bg-slate-50">
-              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.breakEvenTitle}</h4>
-              <p className="text-[10px] text-slate-500 mb-4 font-bold">
+            <Card className="bg-[#171717]">
+              <h4 className="font-bold text-[#D4AF37] mb-2 uppercase text-xs tracking-wider">{t.pdf.breakEvenTitle}</h4>
+              <p className="text-[10px] text-[#A3A3A3] mb-4 font-bold">
                 {t.pdf.breakEvenText
                   .replace("{units}", Number.isFinite(bep.bepUnita) ? formatNumberByLang(bep.bepUnita, lang) : "∞")
                   .replace("{month}", bepMonth || "N/A")}
@@ -886,16 +890,16 @@ const BusinessPlanReport = ({ data, t, lang, bep, projections, cf, ds, eb, marke
               <BreakEvenChart bep={bep} pv={data.prezzoVendita} cv={data.costoVariabile} cf={data.costiFissi} lang={lang} />
             </Card>
 
-            <Card className="bg-slate-50">
-              <h4 className="font-bold text-slate-800 mb-2 uppercase text-xs tracking-wider">{t.pdf.creditTitle}</h4>
+            <Card className="bg-[#171717]">
+              <h4 className="font-bold text-[#D4AF37] mb-2 uppercase text-xs tracking-wider">{t.pdf.creditTitle}</h4>
               <div className="space-y-3 pt-2">
                 <div className="flex justify-between items-center text-xs">
-                  <span>DSCR Index</span>
-                  <span className="font-black text-blue-600 text-lg">{String(ds.dscr)}</span>
+                  <span className="text-[#A3A3A3]">DSCR Index</span>
+                  <span className="font-black text-[#D4AF37] text-lg">{String(ds.dscr)}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span>{t.pdf.maxNeed}</span>
-                  <span className="font-black text-red-600 text-lg">€{formatCurrencyByLang(fabbisogno, lang)}</span>
+                  <span className="text-[#A3A3A3]">{t.pdf.maxNeed}</span>
+                  <span className="font-black text-red-500 text-lg">€{formatCurrencyByLang(fabbisogno, lang)}</span>
                 </div>
               </div>
             </Card>
@@ -915,9 +919,9 @@ const StepCompany = ({ data, updateData }) => {
 
   return (
     <div className="flex flex-col gap-6 max-w-4xl mx-auto animate-in fade-in">
-      <div className="border-b border-slate-200 pb-4">
-        <h2 className="text-2xl font-bold text-slate-900">{t.s1.title}</h2>
-        <p className="text-slate-500 text-sm mt-1">{t.s1.subtitle}</p>
+      <div className="border-b border-[#262626] pb-4">
+        <h2 className="text-2xl font-bold text-[#F5F5F5]">{t.s1.title}</h2>
+        <p className="text-[#A3A3A3] text-sm mt-1">{t.s1.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -950,7 +954,7 @@ const StepCompany = ({ data, updateData }) => {
             suffix="€"
           />
 
-          <div className="mt-4 p-4 bg-blue-50 rounded-lg text-[10px] font-bold text-blue-700 uppercase tracking-wider">
+          <div className="mt-4 p-4 bg-[#D4AF37]/10 rounded-lg text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider border border-[#D4AF37]/30">
             {t.s1.suggestion} {currentSector.label}: {t.s2.price} €{currentSector.p}
             <button
               onClick={() => {
@@ -959,7 +963,7 @@ const StepCompany = ({ data, updateData }) => {
                 updateData("costoVariabile", currentSector.cv);
                 updateData("crescitaAnnua", currentSector.cr);
               }}
-              className="w-full bg-white border border-blue-200 text-blue-600 py-2 rounded shadow-sm mt-2 font-bold"
+              className="w-full bg-[#D4AF37] text-[#0A0A0A] py-2 rounded shadow-sm mt-2 font-bold hover:bg-[#B49020] transition-colors"
             >
               {t.s1.apply}
             </button>
@@ -967,7 +971,7 @@ const StepCompany = ({ data, updateData }) => {
         </Card>
 
         <Card className="md:col-span-2">
-          <h3 className="text-xs font-bold mb-4 uppercase text-slate-500 tracking-widest">{t.s1.mixTitle}</h3>
+          <h3 className="text-xs font-bold mb-4 uppercase text-[#D4AF37] tracking-widest">{t.s1.mixTitle}</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
               label={t.s1.mixProduct}
@@ -1012,13 +1016,13 @@ const StepTeam = ({ data, updateData }) => {
 
   return (
     <div className="flex flex-col gap-6 max-w-4xl mx-auto animate-in fade-in">
-      <div className="border-b border-slate-200 pb-4">
-        <h2 className="text-2xl font-bold text-slate-900">{t.sTeam.title}</h2>
-        <p className="text-slate-500 text-sm mt-1">{t.sTeam.subtitle}</p>
+      <div className="border-b border-[#262626] pb-4">
+        <h2 className="text-2xl font-bold text-[#F5F5F5]">{t.sTeam.title}</h2>
+        <p className="text-[#A3A3A3] text-sm mt-1">{t.sTeam.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-1 border-t-4 border-blue-600">
+        <Card className="md:col-span-1 border-t-4 border-[#D4AF37]">
           <InputField label={t.sTeam.nameLabel} value={name} onChange={setName} />
           <div className="mt-4" />
           <InputField label={t.sTeam.roleLabel} value={role} onChange={setRole} />
@@ -1027,7 +1031,7 @@ const StepTeam = ({ data, updateData }) => {
           <button
             onClick={add}
             disabled={!name || isAn}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold mt-4 flex justify-center items-center gap-2 transition-all hover:bg-blue-700 disabled:opacity-50"
+            className="w-full bg-[#D4AF37] text-[#0A0A0A] py-3 rounded-lg font-bold mt-4 flex justify-center items-center gap-2 transition-all hover:bg-[#B49020] disabled:opacity-50"
           >
             {isAn ? <RefreshCw className="animate-spin" size={14} /> : <UserPlus size={14} />} {t.sTeam.addBtn}
           </button>
@@ -1035,11 +1039,11 @@ const StepTeam = ({ data, updateData }) => {
 
         <div className="md:col-span-2 flex flex-col gap-3">
           {data.team.map((m, i) => (
-            <div key={i} className="bg-white border border-slate-200 p-4 rounded-xl flex justify-between items-center shadow-sm">
+            <div key={i} className="bg-[#171717] border border-[#262626] p-4 rounded-xl flex justify-between items-center shadow-sm">
               <div>
-                <div className="font-bold text-sm">{m.name}</div>
-                <div className="text-[10px] text-blue-600 font-bold uppercase">{m.role}</div>
-                <div className="text-xs text-slate-400 mt-1 italic">"{m.superpower}"</div>
+                <div className="font-bold text-sm text-[#F5F5F5]">{m.name}</div>
+                <div className="text-[10px] text-[#D4AF37] font-bold uppercase">{m.role}</div>
+                <div className="text-xs text-[#A3A3A3] mt-1 italic">"{m.superpower}"</div>
               </div>
               <button
                 onClick={() => {
@@ -1047,7 +1051,7 @@ const StepTeam = ({ data, updateData }) => {
                   n.splice(i, 1);
                   updateData("team", n);
                 }}
-                className="text-slate-300 hover:text-red-500 transition-colors"
+                className="text-[#525252] hover:text-red-500 transition-colors"
                 aria-label="Remove"
               >
                 <Trash2 size={16} />
@@ -1064,19 +1068,19 @@ const StepEconomics = ({ data, updateData }) => {
   const t = useTranslation();
   return (
     <div className="flex flex-col gap-6 max-w-4xl mx-auto animate-in fade-in">
-      <div className="border-b border-slate-200 pb-4">
-        <h2 className="text-2xl font-bold text-slate-900">{t.s2.title}</h2>
-        <p className="text-slate-500 text-sm mt-1">{t.s2.subtitle}</p>
+      <div className="border-b border-[#262626] pb-4">
+        <h2 className="text-2xl font-bold text-[#F5F5F5]">{t.s2.title}</h2>
+        <p className="text-[#A3A3A3] text-sm mt-1">{t.s2.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-t-4 border-blue-500">
+        <Card className="border-t-4 border-[#D4AF37]">
           <InputField label={t.s2.price} value={data.prezzoVendita} onChange={(v) => updateData("prezzoVendita", v)} type="number" />
           <div className="mt-4" />
           <InputField label={t.s2.costVar} value={data.costoVariabile} onChange={(v) => updateData("costoVariabile", v)} type="number" />
         </Card>
 
-        <Card className="border-t-4 border-blue-500">
+        <Card className="border-t-4 border-[#D4AF37]">
           <InputField label={t.s2.costFixed} value={data.costiFissi} onChange={(v) => updateData("costiFissi", v)} type="number" />
           <div className="mt-4" />
           <InputField label={t.s2.units} value={data.unitaAnno1} onChange={(v) => updateData("unitaAnno1", v)} type="number" />
@@ -1090,7 +1094,7 @@ const StepEconomics = ({ data, updateData }) => {
           />
         </Card>
 
-        <Card className="border-t-4 border-slate-300 bg-slate-50">
+        <Card className="border-t-4 border-[#404040] bg-[#1F1F1F]">
           <InputField label={t.s2.debtCapital} value={data.quotaCapitale} onChange={(v) => updateData("quotaCapitale", v)} type="number" />
           <div className="mt-4" />
           <InputField label={t.s2.debtInterest} value={data.quotaInteressi} onChange={(v) => updateData("quotaInteressi", v)} type="number" />
@@ -1209,7 +1213,7 @@ const Dashboard = ({ data }) => {
       <div className={showPdf ? "print:hidden flex flex-col gap-6" : "flex flex-col gap-6"}>
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900">{data.nomeAzienda}</h2>
+            <h2 className="text-3xl font-bold text-[#F5F5F5]">{data.nomeAzienda}</h2>
             <Badge color={ds.bancabile ? COLORS.success : COLORS.danger}>Rating: {ds.giudizio}</Badge>
           </div>
 
@@ -1217,7 +1221,7 @@ const Dashboard = ({ data }) => {
             <button
               onClick={handleOpenPdf}
               disabled={isGeneratingPdf}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg flex items-center gap-2 transform hover:-translate-y-0.5 transition-all disabled:opacity-60"
+              className="bg-[#D4AF37] text-[#0A0A0A] px-6 py-3 rounded-lg font-bold shadow-lg flex items-center gap-2 transform hover:-translate-y-0.5 transition-all disabled:opacity-60"
             >
               {isGeneratingPdf ? <RefreshCw className="animate-spin" size={18} /> : <Download size={18} />}
               {t.dashboard.cta}
@@ -1232,7 +1236,7 @@ const Dashboard = ({ data }) => {
               key={i}
               onClick={() => setSi(i)}
               className={`py-2 rounded-lg font-bold text-xs border transition-all ${
-                si === i ? "bg-slate-900 text-white shadow-md" : "bg-white text-slate-500 border-slate-200"
+                si === i ? "bg-[#D4AF37] text-[#0A0A0A] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.2)]" : "bg-[#171717] text-[#A3A3A3] border-[#404040]"
               }`}
             >
               {s.label}
@@ -1252,12 +1256,12 @@ const Dashboard = ({ data }) => {
           <MetricCard label="ROI Y1" value={`${roi}%`} icon={TrendingUp} />
         </div>
 
-        <div className="flex gap-4 border-b">
+        <div className="flex gap-4 border-b border-[#262626]">
           {[{ id: "financial", l: t.tabs[0] }, { id: "market", l: t.tabs[1] }, { id: "summary", l: t.tabs[2] }].map((tb) => (
             <button
               key={tb.id}
               onClick={() => setTab(tb.id)}
-              className={`pb-2 font-bold transition-all ${tab === tb.id ? "border-b-2 border-blue-600 text-blue-600" : "text-slate-400"}`}
+              className={`pb-2 font-bold transition-all ${tab === tb.id ? "border-b-2 border-[#D4AF37] text-[#D4AF37]" : "text-[#A3A3A3]"}`}
             >
               {tb.l}
             </button>
@@ -1266,9 +1270,9 @@ const Dashboard = ({ data }) => {
 
         {tab === "financial" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in slide-in-from-left-4">
-            <Card className="lg:col-span-2 bg-slate-50/50">
+            <Card className="lg:col-span-2 bg-[#171717]">
               <div className="mb-4 flex justify-between items-center">
-                <h3 className="text-sm font-bold text-slate-700">{t.bepCard.title}</h3>
+                <h3 className="text-sm font-bold text-[#F5F5F5]">{t.bepCard.title}</h3>
                 <Badge color={COLORS.accent}>Enterprise Model</Badge>
               </div>
               <BreakEvenChart
@@ -1281,15 +1285,15 @@ const Dashboard = ({ data }) => {
               />
             </Card>
 
-            <Card className="bg-slate-900 text-white border-none shadow-xl h-full">
-              <h3 className="text-xs font-bold mb-4 flex items-center gap-2 text-blue-400 uppercase tracking-widest">
+            <Card className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4D4D4] shadow-xl h-full">
+              <h3 className="text-xs font-bold mb-4 flex items-center gap-2 text-[#D4AF37] uppercase tracking-widest">
                 <BrainCircuit size={14} /> AI Insights
               </h3>
               {com.loading ? <LoadingPulse text={t.fallback.fin} /> : <MarkdownRenderer content={com.content} />}
             </Card>
 
-            <Card className="lg:col-span-3 bg-slate-50/50">
-              <h3 className="text-sm font-bold mb-4 text-slate-800 uppercase tracking-wider">{t.pdf.cashFlowTitle}</h3>
+            <Card className="lg:col-span-3 bg-[#171717]">
+              <h3 className="text-sm font-bold mb-4 text-[#F5F5F5] uppercase tracking-wider">{t.pdf.cashFlowTitle}</h3>
               <CashFlowChart flows={cf.f} lang={lang} />
             </Card>
           </div>
@@ -1298,7 +1302,7 @@ const Dashboard = ({ data }) => {
         {tab === "market" && (
           <Card className="animate-in slide-in-from-right-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-slate-800 uppercase tracking-widest">{t.marketCard.title}</h3>
+              <h3 className="font-bold text-[#F5F5F5] uppercase tracking-widest">{t.marketCard.title}</h3>
               <SimulationBadge mode={mkt.mode} />
             </div>
             {mkt.loading ? <LoadingPulse text={t.marketCard.loading} /> : <MarkdownRenderer content={mkt.content} />}
@@ -1308,17 +1312,17 @@ const Dashboard = ({ data }) => {
         {tab === "summary" && (
           <Card className="animate-in slide-in-from-right-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-slate-800 uppercase tracking-widest">{t.execCard.title}</h3>
-              <button onClick={() => fExec()} className="text-xs font-bold text-blue-600 flex items-center gap-1">
+              <h3 className="font-bold text-[#F5F5F5] uppercase tracking-widest">{t.execCard.title}</h3>
+              <button onClick={() => fExec()} className="text-xs font-bold text-[#D4AF37] flex items-center gap-1 hover:text-[#B49020]">
                 <RefreshCw size={12} /> {t.execCard.regenerate}
               </button>
             </div>
 
             {!exec.content && !exec.loading ? (
-              <div className="text-center py-20 text-slate-400">
-                <Rocket size={48} className="mx-auto mb-4 opacity-10" />
+              <div className="text-center py-20 text-[#A3A3A3]">
+                <Rocket size={48} className="mx-auto mb-4 opacity-20 text-[#D4AF37]" />
                 <p>{t.execCard.ready}</p>
-                <button onClick={() => fExec()} className="mt-4 bg-slate-900 text-white px-6 py-2 rounded font-bold">
+                <button onClick={() => fExec()} className="mt-4 bg-[#D4AF37] text-[#0A0A0A] px-6 py-2 rounded font-bold hover:bg-[#B49020] transition-colors">
                   {t.execCard.generate}
                 </button>
               </div>
@@ -1341,9 +1345,9 @@ export default function App() {
   const [step, setStep] = useState(0);
 
   const [data, setData] = useState({
-    nomeAzienda: "GreenRoute AI",
+    nomeAzienda: "Black Swan Enterprise",
     settore: "saas",
-    descrizione: "Ottimizzazione rotte per logistica sostenibile flotta green.",
+    descrizione: "Advanced Financial Strategies & Risk Management",
     capitaleIniziale: 150000,
     target: "B2B",
     prezzoVendita: 135,
@@ -1354,10 +1358,10 @@ export default function App() {
     quotaCapitale: 0,
     quotaInteressi: 0,
     team: [
-      { name: "Marco Bianchi", role: "CEO", superpower: "10+ anni logistica" },
-      { name: "Sofia Neri", role: "CTO", superpower: "PhD IA" },
+      { name: "Marco Bianchi", role: "CEO", superpower: "10+ anni in Strategic Advisory" },
+      { name: "Sofia Neri", role: "CTO", superpower: "Risk Optimization Expert" },
     ],
-    marketingMix: { product: "Route Engine API", place: "Enterprise direct", promotion: "LinkedIn Content" },
+    marketingMix: { product: "Black Swan Engine", place: "Enterprise direct", promotion: "Executive Network" },
   });
 
   const [auditLog, setAuditLog] = useState([]);
@@ -1376,44 +1380,46 @@ export default function App() {
 
   return (
     <LanguageContext.Provider value={lang}>
-      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 print:bg-white">
-        <header className="bg-white border-b h-16 flex items-center px-8 justify-between shadow-sm sticky top-0 z-40 print:hidden">
-          <div className="flex items-center gap-2 font-bold text-lg">
-            <div className="w-8 h-8 bg-slate-900 rounded-lg text-white flex items-center justify-center shadow-inner">C</div>
-            <span>CFO AI Planner</span>
+      <div className="min-h-screen bg-[#0A0A0A] text-[#F5F5F5] font-sans selection:bg-[#D4AF37]/30 print:bg-[#0A0A0A]">
+        <header className="bg-[#171717] border-b border-[#262626] h-16 flex items-center px-8 justify-between shadow-md sticky top-0 z-40 print:hidden">
+          <div className="flex items-center gap-3 font-bold text-lg text-[#D4AF37]">
+            <div className="w-8 h-8 bg-[#D4AF37] rounded-lg text-[#0A0A0A] flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.3)]">
+              BS
+            </div>
+            <span>CFO Black Swan Planner</span>
           </div>
 
           <div className="flex gap-4">
             <div className="relative">
               <button
                 onClick={() => setShowAudit(!showAudit)}
-                className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded hover:bg-slate-200 transition-all"
+                className="flex items-center gap-2 text-xs font-bold text-[#A3A3A3] bg-[#262626] px-3 py-1.5 rounded hover:bg-[#404040] hover:text-[#F5F5F5] transition-all"
               >
                 <History size={14} /> {t.dashboard.audit}
               </button>
 
               {showAudit && (
-                <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-slate-200 shadow-xl rounded-xl p-4 z-[60] animate-in fade-in zoom-in-95">
-                  <div className="flex justify-between items-center mb-3 text-xs font-bold uppercase text-slate-500">
+                <div className="absolute top-full right-0 mt-2 w-80 bg-[#171717] border border-[#404040] shadow-2xl rounded-xl p-4 z-[60] animate-in fade-in zoom-in-95">
+                  <div className="flex justify-between items-center mb-3 text-xs font-bold uppercase text-[#A3A3A3]">
                     <h4>{t.dashboard.history}</h4>
-                    <button onClick={() => setShowAudit(false)}>
+                    <button onClick={() => setShowAudit(false)} className="hover:text-[#F5F5F5]">
                       <X size={14} />
                     </button>
                   </div>
 
-                  <div className="max-h-60 overflow-y-auto space-y-2 text-[10px] font-mono">
+                  <div className="max-h-60 overflow-y-auto space-y-2 text-[10px] font-mono pr-2">
                     {auditLog.length === 0 ? (
-                      <div className="italic text-slate-400 text-center py-4">Nessuna modifica.</div>
+                      <div className="italic text-[#525252] text-center py-4">Nessuna modifica.</div>
                     ) : (
                       auditLog.map((l, i) => (
-                        <div key={i} className="border-b border-slate-100 pb-2 last:border-0">
-                          <div className="flex justify-between text-slate-400 mb-1">
+                        <div key={i} className="border-b border-[#262626] pb-2 last:border-0">
+                          <div className="flex justify-between text-[#A3A3A3] mb-1">
                             <span>{l.ts}</span>
-                            <span className="font-bold text-slate-700 uppercase">{l.field}</span>
+                            <span className="font-bold text-[#D4AF37] uppercase">{l.field}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-red-500 line-through">{String(l.old)}</span>
-                            <span className="text-green-600 font-bold">{String(l.new)}</span>
+                            <span className="text-red-400 line-through truncate max-w-[45%]">{String(l.old)}</span>
+                            <span className="text-green-400 font-bold truncate max-w-[45%]">{String(l.new)}</span>
                           </div>
                         </div>
                       ))
@@ -1425,7 +1431,7 @@ export default function App() {
 
             <button
               onClick={() => setLang(lang === "it" ? "en" : "it")}
-              className="text-xs font-bold border border-slate-200 px-4 py-1.5 rounded-lg hover:bg-slate-50 transition-all uppercase"
+              className="text-xs font-bold border border-[#404040] text-[#F5F5F5] px-4 py-1.5 rounded-lg hover:bg-[#262626] transition-all uppercase"
             >
               {lang}
             </button>
@@ -1434,13 +1440,13 @@ export default function App() {
 
         <div className="max-w-6xl mx-auto px-6 py-10 print:p-0 print:m-0">
           <div className="flex justify-center mb-12 print:hidden">
-            <div className="flex items-center bg-white p-1 rounded-full border border-slate-200 shadow-sm overflow-hidden">
+            <div className="flex items-center bg-[#171717] p-1 rounded-full border border-[#262626] shadow-sm overflow-hidden">
               {steps.map((s, i) => (
                 <button
                   key={i}
                   onClick={() => i <= step && setStep(i)}
                   className={`px-10 py-3 rounded-full text-xs font-bold transition-all ${
-                    i === step ? "bg-slate-900 text-white shadow-lg" : i < step ? "text-green-600 bg-green-50" : "text-slate-400 opacity-50"
+                    i === step ? "bg-[#D4AF37] text-[#0A0A0A] shadow-[0_0_15px_rgba(212,175,55,0.2)]" : i < step ? "text-[#D4AF37] bg-[#D4AF37]/10" : "text-[#525252] opacity-50"
                   }`}
                 >
                   {s}
@@ -1456,18 +1462,18 @@ export default function App() {
             {step === 3 && <Dashboard data={data} />}
 
             {step < 3 && (
-              <div className="flex justify-between mt-12 pt-8 border-t border-slate-200 max-w-4xl mx-auto print:hidden">
+              <div className="flex justify-between mt-12 pt-8 border-t border-[#262626] max-w-4xl mx-auto print:hidden">
                 <button
                   onClick={() => setStep((s) => Math.max(0, s - 1))}
                   disabled={step === 0}
-                  className="flex items-center gap-2 px-6 py-3 font-bold text-sm text-slate-500 hover:text-slate-900 disabled:opacity-30 transition-all"
+                  className="flex items-center gap-2 px-6 py-3 font-bold text-sm text-[#A3A3A3] hover:text-[#F5F5F5] disabled:opacity-30 transition-all"
                 >
                   <ArrowLeft size={16} /> {t.nav[0]}
                 </button>
 
                 <button
                   onClick={() => canNext && setStep((s) => s + 1)}
-                  className={`bg-slate-900 hover:bg-slate-800 text-white px-12 py-3 rounded-xl font-bold shadow-xl flex items-center gap-2 transition-all transform hover:-translate-y-0.5 ${
+                  className={`bg-[#D4AF37] hover:bg-[#B49020] text-[#0A0A0A] px-12 py-3 rounded-xl font-bold shadow-[0_0_20px_rgba(212,175,55,0.15)] flex items-center gap-2 transition-all transform hover:-translate-y-0.5 ${
                     canNext ? "" : "opacity-50 cursor-not-allowed"
                   }`}
                 >
